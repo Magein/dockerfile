@@ -24,7 +24,10 @@ RUN wget -q  http://cn2.php.net/distributions/$PHP_VERSION.tar.gz
 RUN tar -xzf $PHP_VERSION.tar.gz
 
 # 编译、安装php
-RUN cd php-7.1.11 && ./configure --prefix=/usr/local/php7.1.11 --enable-fpm --with-mysqli=mysqlnd --with-pdo-mysql=mysqlnd --with-gd -with-jpeg-dir --with-png-dir --with-zlib-dir --with-xpm-dir --with-freetype-dir --enable-gd-native-ttf --with-curl --with-openssl --enable-sockets && make > /dev/null && make install > /dev/null
+RUN cd $PHP_VERSION && ./configure --prefix=/usr/local/php7.1.11 --enable-fpm --with-mysqli=mysqlnd --with-pdo-mysql=mysqlnd --with-gd -with-jpeg-dir --with-png-dir --with-zlib-dir --with-xpm-dir --with-freetype-dir --enable-gd-native-ttf --with-curl --with-openssl --enable-sockets && make > /dev/null && make install > /dev/null
+
+# 复制php.ini文件到lib
+RUN cd $PHP_VERSION && cp php.ini-production /usr/local/php7.1.11/lib/php.ini
 
 # 删除php压缩包和文件
 RUN rm -rf $PHP_VERSION*
