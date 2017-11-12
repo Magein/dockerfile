@@ -61,7 +61,7 @@
     
     建议不要在镜像中启动nginx和php-fpm
     
-    把nginx.conf、php.ini文件放到宿主机中，用挂载的方式把配置文件挂载到docker容器中
+    把nginx.conf、php.ini、php-fpm.conf文件放到宿主机中，用挂载的方式把配置文件挂载到docker容器中
         
     
     
