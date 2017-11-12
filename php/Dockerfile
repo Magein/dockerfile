@@ -18,7 +18,7 @@ RUN yum -y install libxml2-devel.x86_64
 RUN yum -y install libcurl-devel.x86_64 openssl-devel.x86_64 libjpeg-devel libpng-devel.x86_64 libXpm-devel.x86_64 freetype-devel.x86_64
 
 # 官网下载php
-RUN wget -q  http://cn2.php.net/distributions/PHP_VERSION.tar.gz
+RUN wget -q  http://cn2.php.net/distributions/$PHP_VERSION.tar.gz
 
 # 解压php包
 RUN tar -xzf $PHP_VERSION.tar.gz
