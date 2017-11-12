@@ -1,4 +1,5 @@
 ### 基础镜像
+
     docker官网centos镜像
     
 ### 安装
@@ -55,5 +56,12 @@
          
         # sockets
         --enable-sockets
+        
+### 启动
+    
+    建议不要在镜像中启动nginx和php-fpm
+    
+    把nginx.conf、php.ini文件放到宿主机中，用挂载的方式把配置文件挂载到docker容器中
+        
     
     
