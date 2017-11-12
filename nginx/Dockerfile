@@ -4,7 +4,6 @@ FROM centos
 # 创建、维护人员  magein
 MAINTAINER magein
 
-# 设置环境变量
 # 设置安装版本
 ENV NGINX_VERSION=nginx-1.12.2
 
@@ -25,6 +24,3 @@ RUN rm -rf $NGINX_VERSION*
 
 # 暴露80端口
 EXPOSE 80
-
-# 启动nginx
-ENTRYPOINT /usr/local/nginx/sbin/nginx -g "daemon off;"
