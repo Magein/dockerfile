@@ -29,5 +29,8 @@ RUN cd $PHP_VERSION && ./configure --prefix=/usr/local/php7.1.11 --enable-fpm --
 # 复制php.ini文件到lib
 RUN cd $PHP_VERSION && cp php.ini-production /usr/local/php7.1.11/lib/php.ini
 
+# 复制php-fpm文件到etc
+RUN cd $PHP_VERSION && cp php-fpm.conf.default /usr/local/php7.1.11/etc/php-fpm.conf
+
 # 删除php压缩包和文件
 RUN rm -rf $PHP_VERSION*
