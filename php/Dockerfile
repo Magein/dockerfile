@@ -34,3 +34,6 @@ RUN cd /usr/local/$PHP_VERSION/etc && cp php-fpm.conf.default php-fpm.conf
 
 # 删除php压缩包和文件
 RUN rm -rf $PHP_VERSION*
+
+# 启动php-fpm
+ENTRYPOINT /usr/local/$PHP_VERSION/sbin/php-fpm
