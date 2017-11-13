@@ -25,5 +25,8 @@ RUN rm -rf $NGINX_VERSION*
 # 暴露80端口
 EXPOSE 80
 
-# 启动nginx
-ENTRYPOINT /usr/local/nginx/sbin/nginx -g "daemon off;"
+# 设置ENV
+ENV COMMAND=ls
+ENV PARAM=/usr/local/nginx/
+
+CMD $COMMAND $PARAM
