@@ -26,8 +26,8 @@ RUN rm -rf $NGINX_VERSION*
 EXPOSE 80
 
 # 设置ENV
-ENV COMMAND=ls
-ENV PARAM=/usr/local/nginx
-ENV PARAM1="| grep 1"
+ENV COMMAND=/usr/local/nginx/sbin/nginx
+ENV PARAM=-g
+ENV PARAM1="daemon off;"
 
 CMD $COMMAND $PARAM $PARAM1
