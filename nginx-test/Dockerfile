@@ -24,10 +24,3 @@ RUN rm -rf $NGINX_VERSION*
 
 # 暴露80端口
 EXPOSE 80
-
-# 设置ENV
-ENV COMMAND=/usr/local/nginx/sbin/nginx
-ENV PARAM=-g
-ENV PARAM1="daemon off;"
-
-CMD $COMMAND $PARAM $PARAM1
