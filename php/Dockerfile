@@ -29,8 +29,11 @@ RUN cd $PHP_VERSION && ./configure --prefix=/usr/local/php --enable-fpm --with-m
 # 复制php.ini文件到lib
 RUN cd php && cp php.ini-production /usr/local/php/lib/php.ini
 
-# 复制一份php-fpm的配置文件
+# 复制php-fpm配置文件
 RUN cd /usr/local/php/etc && cp php-fpm.conf.default php-fpm.conf
+
+# 复制www.conf配置文件
+RUN cd /usr/local/php/etc/php-fpm.d/www.conf.default && cp www.conf.default www.conf
 
 # 删除php压缩包和文件
 RUN rm -rf $PHP_VERSION*
