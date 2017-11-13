@@ -24,3 +24,5 @@ RUN rm -rf $NGINX_VERSION*
 
 # 暴露80端口
 EXPOSE 80
+
+ENTRYPOINT /usr/local/nginx/sbin/nginx -g "daemon off;"
