@@ -26,14 +26,5 @@ RUN tar -xzf $PHP_VERSION.tar.gz
 # 编译、安装php
 RUN cd $PHP_VERSION && ./configure --prefix=/usr/local/php --enable-fpm --with-mysqli=mysqlnd --with-pdo-mysql=mysqlnd --with-gd -with-jpeg-dir --with-png-dir --with-zlib-dir --with-xpm-dir --with-freetype-dir --enable-gd-native-ttf --with-curl --with-openssl --enable-sockets && make > /dev/null && make install > /dev/null
 
-# 复制php.ini文件到lib
-RUN cd php && cp php.ini-production /usr/local/php/lib/php.ini
-
-# 复制一份php-fpm的配置文件
-RUN cd /usr/local/php/etc && cp php-fpm.conf.default php-fpm.conf
-
 # 删除php压缩包和文件
 RUN rm -rf $PHP_VERSION*
-
-# 启动php-fpm
-ENTRYPOINT /usr/local/php/sbin/php-fpm
