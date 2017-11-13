@@ -1,5 +1,5 @@
 # 基础镜像为centos
-FROM centos
+FROM docker.io/centos
 
 # 创建、维护人员  magein
 MAINTAINER magein
@@ -24,6 +24,3 @@ RUN rm -rf $NGINX_VERSION*
 
 # 暴露80端口
 EXPOSE 80
-
-# 启动nginx
-ENTRYPOINT /usr/local/nginx/sbin/nginx -g "daemon off;"
