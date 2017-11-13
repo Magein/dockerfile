@@ -1,3 +1,11 @@
+### 版本
+    
+    docker  1.7.1
+    centos  6.8
+    kernel  2.6
+    nginx   1.12.2
+    php     7.1.11
+
 ### 基础镜像
 
     docker官网centos镜像
