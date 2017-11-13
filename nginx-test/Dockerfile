@@ -27,6 +27,7 @@ EXPOSE 80
 
 # 设置ENV
 ENV COMMAND=ls
-ENV PARAM=/usr/local/nginx/
+ENV PARAM=/usr/local/nginx
+ENV PARAM1="| grep 1"
 
-CMD $COMMAND $PARAM
+CMD $COMMAND $PARAM $PARAM1
