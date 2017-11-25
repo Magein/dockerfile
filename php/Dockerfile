@@ -33,7 +33,7 @@ RUN cd php && cp php.ini-production /usr/local/php/lib/php.ini
 RUN cd /usr/local/php/etc && cp php-fpm.conf.default php-fpm.conf
 
 # 复制www.conf配置文件
-RUN cd /usr/local/php/etc/php-fpm.d/www.conf.default && cp www.conf.default www.conf
+RUN cd /usr/local/php/etc/php-fpm.d && cp www.conf.default www.conf
 
 # 删除php压缩包和文件
 RUN rm -rf $PHP_VERSION*
