@@ -27,7 +27,7 @@ RUN tar -xzf $PHP_VERSION.tar.gz
 RUN cd $PHP_VERSION && ./configure --prefix=/usr/local/php --enable-fpm --with-mysqli=mysqlnd --with-pdo-mysql=mysqlnd --with-gd -with-jpeg-dir --with-png-dir --with-zlib-dir --with-xpm-dir --with-freetype-dir --enable-gd-native-ttf --with-curl --with-openssl --enable-sockets && make > /dev/null && make install > /dev/null
 
 # 复制php.ini文件到lib
-RUN cd php && cp php.ini-production /usr/local/php/lib/php.ini
+RUN cd $PHP_VERSION && cp php.ini-production /usr/local/php/lib/php.ini
 
 # 复制php-fpm配置文件
 RUN cd /usr/local/php/etc && cp php-fpm.conf.default php-fpm.conf
