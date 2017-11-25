@@ -7,6 +7,24 @@ MAINTAINER magein
 # 设置安装版本
 ENV NGINX_VERSION=nginx-1.12.2
 
+# nginx安装路径
+ENV NGINX_PREFIX=/usr/local/nginx
+
+# 主机中的nginx文件
+ENV HOST_HOME=/usr/local/nginx
+
+# 使用主机中的配置文件
+ADD $HOST_HOME/conf $NGINX_PREFIX/conf
+
+# 使用主机中的日志文件
+ADD $HOST_HOME/logs $NGINX_PREFIX/logs
+
+# 使用主机中的html项目路径
+ADD $HOST_HOME/html $NGINX_PREFIX/html
+
+# 使用主机中的var
+ADD /var/ /var/
+
 # 安装依赖 gcc、wget、make、zlib、pcre
 RUN yum -y install gcc wget make pcre-devel.x86_64 zlib-devel.x86_64  > /dev/null
 
@@ -17,7 +35,7 @@ RUN wget  http://nginx.org/download/$NGINX_VERSION.tar.gz
 RUN tar -xzf $NGINX_VERSION.tar.gz
 
 # 编译、安装 nginx
-RUN cd $NGINX_VERSION && ./configure --prefix=/usr/local/nginx > /dev/null && make > /dev/null &&make install > /dev/null
+RUN cd $NGINX_VERSION && ./configure --prefix=$NGINX_PREFIX > /dev/null && make > /dev/null &&make install > /dev/null
 
 # 删除文件nginx包以及文件
 RUN rm -rf $NGINX_VERSION*
