@@ -38,5 +38,7 @@ RUN cd /usr/local/php/etc/php-fpm.d && cp www.conf.default www.conf
 # 删除php压缩包和文件
 RUN rm -rf $PHP_VERSION*
 
+EXPOSE 9000
+
 # 启动php-fpm
 ENTRYPOINT /usr/local/php/sbin/php-fpm -c /usr/local/php/lib/php.ini -y /usr/local/php/ect/php-fpm.conf
