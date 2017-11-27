@@ -41,4 +41,4 @@ RUN rm -rf $PHP_VERSION*
 EXPOSE 9000
 
 # 启动php-fpm
-ENTRYPOINT /usr/local/php/sbin/php-fpm -c /usr/local/php/lib/php.ini -y /usr/local/php/ect/php-fpm.conf
+CMD ["/usr/local/php/sbin/php-fpm"]
