@@ -1,29 +1,36 @@
-# 基础镜像为centos
-FROM centos
+# from centos
+FROM docker-io/centos
 
-# 创建、维护人员  magein
+# author magein
 MAINTAINER magein
 
-# 设置安装版本
+# nginx version
 ENV NGINX_VERSION=nginx-1.12.2
 
-# nginx安装路径
+# nginx path
 ENV NGINX_PREFIX=/usr/local/nginx
+ENV OUTPUT=/dev/null
 
-# 安装依赖 gcc、wget、make、zlib、pcre
-RUN yum -y install gcc wget make pcre-devel.x86_64 zlib-devel.x86_64  > /dev/null
+# gcc、wget、make、zlib、pcre support
+RUN yum -y install gcc wget make pcre-devel.x86_64 zlib-devel.x86_64 > $OUTPUT \
 
-# 官网下载nginx
-RUN wget  http://nginx.org/download/$NGINX_VERSION.tar.gz
+    && echo 'download '.$NGINX_VERSION \
+    && wget -q http://nginx.org/download/$NGINX_VERSION.tar.gz \
 
-# 解压nginx包
-RUN tar -xzf $NGINX_VERSION.tar.gz
+    && echo 'tar '.$NGINX_VERSION \
+    && tar -xzf $NGINX_VERSION.tar.gz \
 
-# 编译、安装 nginx
-RUN cd $NGINX_VERSION && ./configure --prefix=$NGINX_PREFIX > /dev/null && make > /dev/null &&make install > /dev/null
+    && echo 'install nginx to '.$NGINX_PREFIX \
+    && cd $NGINX_VERSION
+    && ./configure --prefix=$NGINX_PREFIX > $OUTPUT \
+    && make > $OUTPUT_NULL \
+    && make install > $OUTPUT \
 
-# 删除文件nginx包以及文件
-RUN rm -rf $NGINX_VERSION*
+    && echo 'remove nginx file' \
+    && rm -rf $NGINX_VERSION* \
+
+    && echo 'remove gcc、wget、make' \
+    && yum -y remove gcc wget make > /dev/null
 
 # 暴露80端口
 EXPOSE 80
