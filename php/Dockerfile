@@ -18,7 +18,7 @@ ENV PHP_SUPPORT --enable-fpm \
                 --with-mysqli=mysqlnd \
                 --with-pdo-mysql=mysqlnd \
                 --with-gd \
-                -with-jpeg-dir \
+                --with-jpeg-dir \
                 --with-png-dir \
                 --with-zlib-dir \
                 --with-xpm-dir \
@@ -26,7 +26,8 @@ ENV PHP_SUPPORT --enable-fpm \
                 --enable-gd-native-ttf \
                 --with-curl \
                 --with-openssl \
-                --enable-sockets
+                --enable-sockets \
+                --enable-mbstring
 
 ENV OUTPUT /dev/null
 
