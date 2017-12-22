@@ -70,6 +70,21 @@
     建议不要在镜像中启动nginx和php-fpm
     
     把nginx.conf、php.ini、php-fpm.conf文件放到宿主机中，用挂载的方式把配置文件挂载到docker容器中
+    
+    1. 容器互联使用docker之定义网络实现
+        docker network create magein
+         
+    2. 启动php、nginx是指定网络 --network magein
+     
+    3. 修改nginx.conf配置文件
+     
+        fastcgi_pass   php:9000;
+        
+        php为php-fpm容器启动的名称
+        
+    4. 修改www.config配置文件
+        listen=[::]:9000
+        
         
     
     
