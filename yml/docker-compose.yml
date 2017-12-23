@@ -1,0 +1,27 @@
+version: "3"
+services:
+  php:
+    # 启动php
+    image: registry.cn-hangzhou.aliyuncs.com/magein/php
+    ports:
+      - 9000:9000
+    volumes:
+      # 配置www.conf中listen=[::]:9000
+      - /var/ftp/pub/dockerfile/php/etc/php-fpm.d/www.conf:/usr/local/php/etc/php-fpm.d/www.conf
+      - /var/www:/var/www
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+  nginx:
+    image: registry.cn-hangzhou.aliyuncs.com/magein/nginx
+    ports:
+      - 80:80
+    volumes:
+      - /var/ftp/pub/dockerfile/nginx/nginx.conf:/usr/local/nginx/conf/nginx.conf
+      - /var/www:/var/www
+      - /tmp/logs:/usr/local/nginx/logs
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
