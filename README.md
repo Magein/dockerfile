@@ -8,7 +8,7 @@
 
 ### 基础镜像
 
-    docker官网centos镜像
+    centos
     
 ### 安装
     
