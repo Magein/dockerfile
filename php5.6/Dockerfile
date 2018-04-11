@@ -33,7 +33,7 @@ ENV OUTPUT /dev/null
 
 # install command for gcc、wget、make
 RUN echo 'install command' \
-    && yum -y install gcc wget make libxml2-devel.x86_64
+    && yum -y install gcc wget make libxml2-devel.x86_64 re2c.x86_64
 
 # install php extension
 RUN echo 'install php extension' \
