@@ -14,12 +14,14 @@ ENV DOWNLOAD_PHP_URL http://cn2.php.net/distributions/php-5.6.35.tar.gz
 ENV DOWNLOAD_PHP_FILENAME php-5.6.35.tar.gz
 
 # php extension
+# php 5.6 需要安装bison
 ENV PHP_EXT libcurl-devel.x86_64 \
             openssl-devel.x86_64 \
             libjpeg-devel \
             libpng-devel.x86_64 \
             libXpm-devel.x86_64 \
-            freetype-devel.x86_64
+            freetype-devel.x86_64 \
+            bison-devel.x86_64
 # php support
 ENV PHP_SUPPORT --enable-fpm \
                 --with-mysqli=mysqlnd \
@@ -38,18 +40,14 @@ ENV PHP_SUPPORT --enable-fpm \
 
 ENV OUTPUT /dev/null
 
-# install command for gcc、wget、make
-RUN echo 'keep quiet install command' \
-    && yum -y -q install gcc wget make libxml2-devel.x86_64
+# keep quiet install command for gcc、wget、make
+RUN yum -y -q install gcc wget make libxml2-devel.x86_64
 
-# install php extension
-RUN echo 'keep quiet install php extension' \
-    && yum -y -q install $PHP_EXT
+# keep quiet install php extension
+RUN yum -y -q install $PHP_EXT
 
-# donwload php
-RUN echo 'keep quiet download php' \
-    && wget -q  $DOWNLOAD_PHP_URL \
-    && tar -zxf $DOWNLOAD_PHP_FILENAME
+# keep quiet download php
+RUN wget -q  $DOWNLOAD_PHP_URL && tar -zxf $DOWNLOAD_PHP_FILENAME
 
 # install php
 RUN cd $PHP_VERSION \
