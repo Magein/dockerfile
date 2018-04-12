@@ -6,6 +6,13 @@ MAINTAINER magein
 
 # php version
 ENV PHP_VERSION php-5.6.35
+
+# download php url
+ENV DOWNLOAD_PHP_URL http://cn2.php.net/distributions/php-5.6.35.tar.gz
+
+# download php filename
+ENV DOWNLOAD_PHP_FILENAME php-5.6.35.tar.gz
+
 # php extension
 ENV PHP_EXT libcurl-devel.x86_64 \
             openssl-devel.x86_64 \
@@ -32,28 +39,31 @@ ENV PHP_SUPPORT --enable-fpm \
 ENV OUTPUT /dev/null
 
 # install command for gcc、wget、make
-RUN echo 'install command' \
-    && yum -y install gcc wget make libxml2-devel.x86_64 re2c.x86_64
+RUN echo 'keep quiet install command' \
+    && yum -y -q install gcc wget make libxml2-devel.x86_64
 
 # install php extension
-RUN echo 'install php extension' \
-    && yum -y install $PHP_EXT
+RUN echo 'keep quiet install php extension' \
+    && yum -y -q install $PHP_EXT
 
 # donwload php
-RUN echo 'download php' \
-    && wget -q  http://cn2.php.net/distributions/$PHP_VERSION.tar.gz \
-    && tar -xzf $PHP_VERSION.tar.gz
+RUN echo 'keep quiet download php' \
+    && wget -q  $DOWNLOAD_PHP_URL
+    && tar -zxf $DOWNLOAD_PHP_FILENAME
 
 # install php
 RUN cd $PHP_VERSION \
-    && ./configure --prefix=/usr/local/php $PHP_SUPPORT > $OUTPUT \
+    && ./configure --prefix=/usr/local/php5.6 $PHP_SUPPORT > $OUTPUT \
     && make > $OUTPUT \
     && make install > $OUTPUT
 
 # php config
+# php5.6和php7.x fpm配置文件有所不同
+# php5.6的fpm配置文件是一个文件 在php安装目录下的etc/目录下
+# php7.x系列的fpm配置文件分开了，etc/目录下php-fpm.conf.default是主进程配置文件，php-fpm.d目录下面是控制子进程的配置文件
+# 这里安装的5.6版本的
 RUN cd $PHP_VERSION && cp php.ini-production /usr/local/php/lib/php.ini \
     && cd /usr/local/php/etc && cp php-fpm.conf.default php-fpm.conf \
-    && cd /usr/local/php/etc/php-fpm.d && cp www.conf.default www.conf
 
 # remove file and command
 RUN echo 'remove nginx file and command' \
