@@ -1,13 +1,14 @@
+version: "3"
 services:
   php:
-    image: registry.cn-hangzhou.aliyuncs.com/magein/php5.6
+    image: registry.cn-hangzhou.aliyuncs.com/magein/php-5.6.35
     ports:
       - 9000:9000
     volumes:
-      - /yml/php.ini:/usr/local/php5.6/lib/php.ini
-      - /yml/www.conf:/usr/local/php/etc/php-fpm.conf
+      - /yml/php.ini:/usr/local/php-5.6.35/lib/php.ini
+      - /yml/php-fpm.conf:/usr/local/php-5.6.35/etc/php-fpm.conf
       - /var/www:/var/www
-      - /yml/php/:/usr/local/php/var/log
+      - /yml/:/usr/local/php-5.6.35/var/log
     deploy:
       replicas: 1
       restart_policy:
@@ -19,7 +20,7 @@ services:
     volumes:
       - /yml/nginx.conf:/usr/local/nginx/conf/nginx.conf
       - /var/www:/var/www
-      - /yml/nginx/logs:/usr/local/nginx/logs
+      - /yml/:/usr/local/nginx/logs
     deploy:
       replicas: 1
       restart_policy:

@@ -7,8 +7,6 @@ MAINTAINER magein
 # php version
 ENV PHP_VERSION php-5.6.35
 
-ENV PHP_
-
 # download php url
 ENV DOWNLOAD_PHP_URL http://cn2.php.net/distributions/php-5.6.35.tar.gz
 
@@ -49,7 +47,7 @@ RUN wget -q  $DOWNLOAD_PHP_URL && tar -zxf $DOWNLOAD_PHP_FILENAME
 
 # install php
 RUN cd $PHP_VERSION \
-    && ./configure --prefix=/usr/local/php5.6 $PHP_SUPPORT > $OUTPUT \
+    && ./configure --prefix=/usr/local/$PHP_VERSION $PHP_SUPPORT > $OUTPUT \
     && make > $OUTPUT \
     && make install > $OUTPUT
 
@@ -58,8 +56,8 @@ RUN cd $PHP_VERSION \
 # php5.6的fpm配置文件是一个文件 在php安装目录下的etc/目录下
 # php7.x系列的fpm配置文件分开了，etc/目录下php-fpm.conf.default是主进程配置文件，php-fpm.d目录下面是控制子进程的配置文件
 # 这里安装的5.6版本的
-RUN cd $PHP_VERSION && cp php.ini-production /usr/local/php5.6/lib/php.ini \
-    && cd /usr/local/php5.6/etc && cp php-fpm.conf.default php-fpm.conf
+RUN cd $PHP_VERSION && cp php.ini-production /usr/local/$PHP_VERSION/lib/php.ini \
+    && cd /usr/local/$PHP_VERSION/etc && cp php-fpm.conf.default php-fpm.conf
 
 # remove file and command
 RUN echo 'remove nginx file and command' \
@@ -70,4 +68,4 @@ RUN echo 'remove nginx file and command' \
 EXPOSE 9000
 
 # 启动php-fpm
-ENTRYPOINT /usr/local/php/sbin/php-fpm -c /usr/local/php/lib/php.ini -y /usr/local/php/etc/php-fpm.conf -F
+ENTRYPOINT /usr/local/$PHP_VERSION/sbin/php-fpm -c /usr/local/$PHP_VERSION/lib/php.ini -y /usr/local/$PHP_VERSION/etc/php-fpm.conf -F
