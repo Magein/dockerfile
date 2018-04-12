@@ -56,8 +56,8 @@ RUN cd $PHP_VERSION \
 # php5.6的fpm配置文件是一个文件 在php安装目录下的etc/目录下
 # php7.x系列的fpm配置文件分开了，etc/目录下php-fpm.conf.default是主进程配置文件，php-fpm.d目录下面是控制子进程的配置文件
 # 这里安装的5.6版本的
-RUN cd $PHP_VERSION && cp php.ini-production /usr/local/php/lib/php.ini \
-    && cd /usr/local/php/etc && cp php-fpm.conf.default php-fpm.conf
+RUN cd $PHP_VERSION && cp php.ini-production /usr/local/php5.6/lib/php.ini \
+    && cd /usr/local/php5.6/etc && cp php-fpm.conf.default php-fpm.conf
 
 # remove file and command
 RUN echo 'remove nginx file and command' \
