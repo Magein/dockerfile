@@ -48,7 +48,7 @@ RUN echo 'keep quiet install php extension' \
 
 # donwload php
 RUN echo 'keep quiet download php' \
-    && wget -q  $DOWNLOAD_PHP_URL
+    && wget -q  $DOWNLOAD_PHP_URL \
     && tar -zxf $DOWNLOAD_PHP_FILENAME
 
 # install php
@@ -63,7 +63,7 @@ RUN cd $PHP_VERSION \
 # php7.x系列的fpm配置文件分开了，etc/目录下php-fpm.conf.default是主进程配置文件，php-fpm.d目录下面是控制子进程的配置文件
 # 这里安装的5.6版本的
 RUN cd $PHP_VERSION && cp php.ini-production /usr/local/php/lib/php.ini \
-    && cd /usr/local/php/etc && cp php-fpm.conf.default php-fpm.conf \
+    && cd /usr/local/php/etc && cp php-fpm.conf.default php-fpm.conf
 
 # remove file and command
 RUN echo 'remove nginx file and command' \
