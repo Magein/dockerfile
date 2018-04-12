@@ -1,5 +1,5 @@
 # from centos
-FROM centos
+FROM centos:centos7
 
 # author magein
 MAINTAINER magein
@@ -14,14 +14,13 @@ ENV DOWNLOAD_PHP_URL http://cn2.php.net/distributions/php-5.6.35.tar.gz
 ENV DOWNLOAD_PHP_FILENAME php-5.6.35.tar.gz
 
 # php extension
-# php 5.6 需要安装bison
 ENV PHP_EXT libcurl-devel.x86_64 \
             openssl-devel.x86_64 \
             libjpeg-devel \
             libpng-devel.x86_64 \
             libXpm-devel.x86_64 \
             freetype-devel.x86_64 \
-            bison-devel.x86_64
+            libxml2-devel.x86_64
 # php support
 ENV PHP_SUPPORT --enable-fpm \
                 --with-mysqli=mysqlnd \
@@ -41,10 +40,7 @@ ENV PHP_SUPPORT --enable-fpm \
 ENV OUTPUT /dev/null
 
 # keep quiet install command for gcc、wget、make
-RUN yum -y -q install gcc wget make libxml2-devel.x86_64
-
-# keep quiet install php extension
-RUN yum -y -q install $PHP_EXT
+RUN yum -y -q install gcc wget make $PHP_EXT
 
 # keep quiet download php
 RUN wget -q  $DOWNLOAD_PHP_URL && tar -zxf $DOWNLOAD_PHP_FILENAME
@@ -66,7 +62,7 @@ RUN cd $PHP_VERSION && cp php.ini-production /usr/local/php/lib/php.ini \
 # remove file and command
 RUN echo 'remove nginx file and command' \
     && rm -rf $PHP_VERSION* \
-    && yum -y install gcc wget make
+    && yum remove -y gcc wget make
 
 # expose 9000
 EXPOSE 9000
