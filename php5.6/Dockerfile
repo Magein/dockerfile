@@ -7,6 +7,8 @@ MAINTAINER magein
 # php version
 ENV PHP_VERSION php-5.6.35
 
+ENV PHP_
+
 # download php url
 ENV DOWNLOAD_PHP_URL http://cn2.php.net/distributions/php-5.6.35.tar.gz
 

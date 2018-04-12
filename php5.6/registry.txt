@@ -1,0 +1,2 @@
+docker pull registry.cn-hangzhou.aliyuncs.com/magein/php5.6
+docker pull registry.cn-hangzhou.aliyuncs.com/magein/nginx

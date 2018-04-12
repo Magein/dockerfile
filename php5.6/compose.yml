@@ -1,0 +1,26 @@
+services:
+  php:
+    image: registry.cn-hangzhou.aliyuncs.com/magein/php5.6
+    ports:
+      - 9000:9000
+    volumes:
+      - /yml/php.ini:/usr/local/php5.6/lib/php.ini
+      - /yml/www.conf:/usr/local/php/etc/php-fpm.conf
+      - /var/www:/var/www
+      - /yml/php/:/usr/local/php/var/log
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+  nginx:
+    image: registry.cn-hangzhou.aliyuncs.com/magein/nginx
+    ports:
+      - 80:80
+    volumes:
+      - /yml/nginx.conf:/usr/local/nginx/conf/nginx.conf
+      - /var/www:/var/www
+      - /yml/nginx/logs:/usr/local/nginx/logs
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
