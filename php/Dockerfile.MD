@@ -17,14 +17,14 @@ ENV PHP_PREFIX /usr/local/php/
 # php配置文件php.ini的配置文件
 ENV PHP_INI $PHP_PREFIX/lib/
 
-# php文件的下载链接
-ENV PHP_DOWNLOAD_URL http://cn2.php.net/distributions/php-5.6.35.tar.gz
-
 # php文件包下载到容器中的名字
-ENV PHP_PACKAGE_FILENAME php-5.6.35.tar.gz
+ENV PHP_PACKAGE_FILENAME $PHP_VERSION.tar.gz
+
+# php文件的下载链接
+ENV PHP_DOWNLOAD_URL http://cn2.php.net/distributions/$PHP_PACKAGE_FILENAME
 
 # php文件包解压后的目录名称
-ENV PHP_DIRECTORY php-5.6.35
+ENV PHP_DIRECTORY $PHP_VERSION
 
 # 我安装了一些常用的扩展，安装这些扩展的时候需要依赖一些开发包，所以直接通过 yum 进行安装，如果编译失败，可以查看相关版本
 ENV PHP_EXTENSION_DEPENDENT \
@@ -107,8 +107,23 @@ RUN yum -y -q install gcc wget make $PHP_EXTENSION_DEPENDENT \
 EXPOSE 9000
 
 # 启动 php-fpm
-# -F force to stay in foreground, and ignore daemonize option from config file
-# 上面是php-fpm的手册解释
-# 放到前台执行
-# 这里一开始看的时候，并没有理解，只是看到相关资料，
+# 参数 -F 的解释：
+#   使用命令：php-fpm --help | grep F
+#   可以看到：force to stay in foreground, and ignore daemonize option from config file
+#   意思是：忽略配置文件中的daemonize选项，迫使程序停留在前台
+#
+# 这里是有一个关于docker的概念需要强调一下：
+#  docker不是虚拟机,docker启动的容器是一个进程
+#  docker不是虚拟机,docker启动的容器是一个进程
+#  docker不是虚拟机,docker启动的容器是一个进程
+# 启动 php 进程的命令结束后（可以继续输入其他的命令继续工作，php服务在后台执行），那么这个容器也就终止了，所以要要把后台服务服务放到前台执行（已经无法在当前终端输入命令继续工作了）
+#
+# 更好的理解：
+#   ps -ef 观察第二行的PID，这里是进程号，记录最后一行的 PID  假如为：2195
+#   ls
+#   ps -ef 最后一行的PID应该是 2197 ，上面执行了 ls命令 所以进程号为 2196，为什么看不到 ls的 进程号，应为ls后，进程已经结束了，当前这里确保当前主机只有你一个人在操作
+# ls命令跟启动php命令都是启动一个进程，命令执行完成后，这个进程就已经结束，不同的是，php启动后会在后台运行，生成一个新的进程，可以通过上面的方法测试，查看进程号的变化
+#
+# 综上所述，启动nginx php 等后台进程的时候，需要保持在前台运行
+#
 ENTRYPOINT $PHP_PREFIX/sbin/php-fpm -c $PHP_PREFIX/lib/php.ini -y $PHP_PREFIX/etc/php-fpm.conf.default -F

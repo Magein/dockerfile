@@ -7,20 +7,20 @@ MAINTAINER magein
 # php version 5.6.35
 ENV PHP_VERSION php-5.6.35
 
+# php compression package filename
+ENV PHP_PACKAGE_FILENAME $PHP_VERSION.tar.gz
+
+# php downloads the url
+ENV PHP_DOWNLOAD_URL http://cn2.php.net/distributions/$PHP_PACKAGE_FILENAME
+
+# dicectory name after unzip
+ENV PHP_DIRECTORY $PHP_VERSION
+
 # php installation location
 ENV PHP_PREFIX /usr/local/php/
 
 # php.ini location
 ENV PHP_INI $PHP_PREFIX/lib/
-
-# php downloads the url
-ENV PHP_DOWNLOAD_URL http://cn2.php.net/distributions/php-5.6.35.tar.gz
-
-# php compression package filename
-ENV PHP_PACKAGE_FILENAME php-5.6.35.tar.gz
-
-# dicectory name after unzip
-ENV PHP_DIRECTORY php-5.6.35
 
 # php extension dependent
 ENV PHP_EXTENSION_DEPENDENT \
