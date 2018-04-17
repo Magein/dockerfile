@@ -7,17 +7,17 @@ MAINTAINER magein
 # nginx version
 ENV NGINX_VERSION nginx-1.12.2
 
+# nginx package filename
+ENV NGINX_PACKAGE_FILENAME $NGINX_VERSION.tar.gz
+
+# nginx download url
+ENV NGINX_DOWNLOAD_URL http://nginx.org/download/$NGINX_PACKAGE_FILENAME
+
 # nginx installation location
 ENV NGINX_PREFIX /usr/local/nginx
 
-# nginx download url
-ENV NGINX_DOWNLOAD_URL http://nginx.org/download/nginx-1.12.2.tar.gz
-
-# nginx package filename
-ENV NGINX_PACKAGE_FILENAME nginx-1.12.2.tar.gz
-
 # nginx directory
-ENV NGINX_DIRECTORY nginx-1.12.2
+ENV NGINX_DIRECTORY $NGINX_VERSION
 
 # gcc、wget、make、zlib、pcre support
 RUN yum -q -y install gcc wget make pcre-devel.x86_64 zlib-devel.x86_64 \
