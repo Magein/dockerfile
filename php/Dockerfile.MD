@@ -1,10 +1,10 @@
 ### 安装步骤详解
 
     # 基础镜像是centos的官方镜像,版本7
-        FROM centos:centos7
+    FROM centos:centos7
      
-    # 作者
-        MAINTAINER magein
+    # 声明作者
+    MAINTAINER magein
      
     ### 以下定义了一些环境变量，
     # 在docker中，ENV 定义的变量可以在docker run 的时候通过 -v 改变

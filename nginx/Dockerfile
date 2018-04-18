@@ -30,8 +30,8 @@ RUN yum -q -y install gcc wget make pcre-devel.x86_64 zlib-devel.x86_64 \
     && make install \
     && rm -rf /$NGINX_PACKAGE_FILENAME \
     && rm -rf /$NGINX_DIRECTORY \
-    && yum -q -y remove gcc wget make
-
+    && yum -q -y remove gcc wget make \
+    && rm -rf /var/cache/yum/
 # expose 80
 EXPOSE 80
 

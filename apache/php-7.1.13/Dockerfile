@@ -86,7 +86,8 @@ RUN yum -q -y install $PHP_EXTENSION_DEPENDENT \
     && cp php.ini-development $PHP_PREFIX/lib/php.ini \
     && rm -rf /$PHP_PACKAGE_FILENAME \
     && rm -rf /$PHP_DIRECTORY \
-    && yum -q -y remove gcc wget make
+    && yum -q -y remove gcc wget make \
+    && rm -rf /var/cache/yum/
 
 # expose 80
 EXPOSE 80

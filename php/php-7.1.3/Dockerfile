@@ -61,7 +61,8 @@ RUN yum -y -q install gcc wget make $PHP_EXTENSION_DEPENDENT \
     && cp php.ini-development $PHP_PREFIX/lib/php.ini \
     && rm -rf /$PHP_PACKAGE_FILENAME \
     && rm -rf /$PHP_DIRECTORY \
-    && yum -q -y remove gcc wget make
+    && yum -q -y remove gcc wget make \
+    && rm -rf /var/cache/yum/
 
 # expose 9000
 EXPOSE 9000

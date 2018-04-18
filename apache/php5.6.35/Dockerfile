@@ -29,8 +29,8 @@ RUN yum -q -y install gcc wget make apr-util-devel.x86_64 pcre-devel.x86_64 open
     && make > /dev/null \
     && make install > /dev/null \
     && rm -rf /$APACHE_PACKAGE_FILENAME \
-    && rm -rf /$APACHE_DIRECTORY
-
+    && rm -rf /$APACHE_DIRECTORY \
+    && rm -rf /var/cache/yum/
 # php version php-5.6.35
 ENV PHP_VERSION php-5.6.35
 
