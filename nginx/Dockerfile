@@ -28,7 +28,6 @@ RUN yum -q -y install gcc wget make pcre-devel.x86_64 zlib-devel.x86_64 \
     && ./configure --prefix=$NGINX_PREFIX > /dev/null \
     && make -s \
     && make install \
-    && cp php.ini-development $PHP_PREFIX/lib/php.ini \
     && rm -rf /$NGINX_PACKAGE_FILENAME \
     && rm -rf /$NGINX_DIRECTORY \
     && yum -q -y remove gcc wget make \
