@@ -31,8 +31,8 @@ RUN yum -q -y install gcc wget make apr-util-devel.x86_64 pcre-devel.x86_64 open
     && rm -rf /$APACHE_PACKAGE_FILENAME \
     && rm -rf /$APACHE_DIRECTORY
 
-# php version php-7.1.13
-ENV PHP_VERSION php-7.1.13
+# php version php-5.6.35
+ENV PHP_VERSION php-5.6.35
 
 # php compression package filename
 ENV PHP_PACKAGE_FILENAME $PHP_VERSION.tar.gz
@@ -80,9 +80,10 @@ RUN yum -q -y install $PHP_EXTENSION_DEPENDENT \
     && mkdir $PHP_DIRECTORY \
     && tar -zxf $PHP_PACKAGE_FILENAME -C $PHP_DIRECTORY --strip-components 1 \
     && cd $PHP_DIRECTORY \
-    && ./configure --prefix=$PHP_PREFIX --with-apxs2=$APACHE_PREFIX/bin/apxs --with-config-file-path=$PHP_INI $PHP_EXTENSION > /dev/null \
+    && ./configure --prefix=$PHP_PREFIX --with-apxs2=$APACHE_PREFIX/bin/apxs > /dev/null \
     && make -s \
     && make install \
+    && cp php.ini-development $PHP_PREFIX/lib/php.ini \
     && rm -rf /$PHP_PACKAGE_FILENAME \
     && rm -rf /$PHP_DIRECTORY \
     && yum -q -y remove gcc wget make

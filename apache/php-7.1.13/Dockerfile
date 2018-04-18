@@ -4,8 +4,35 @@ FROM centos:centos7
 # author magein
 MAINTAINER magein
 
-# php version 5.6.35
-ENV PHP_VERSION php-5.6.35
+# apache version
+ENV APACHE_VERSION httpd-2.4.29
+
+# apache package filename
+ENV APACHE_PACKAGE_FILENAME $APACHE_VERSION.tar.gz
+
+# apache download url
+ENV APACHE_DOWNLOAD_URL http://mirrors.hust.edu.cn/apache/httpd/$APACHE_PACKAGE_FILENAME
+
+# apache installation location
+ENV APACHE_PREFIX /usr/local/apache
+
+# apache directory
+ENV APACHE_DIRECTORY $APACHE_VERSION
+
+# gcc、wget、make、apr-util-devel.x86_64
+RUN yum -q -y install gcc wget make apr-util-devel.x86_64 pcre-devel.x86_64 openssl-devel.x86_64 perl\
+    && wget -q -O $APACHE_PACKAGE_FILENAME $APACHE_DOWNLOAD_URL \
+    && mkdir $APACHE_DIRECTORY \
+    && tar -xzf $APACHE_PACKAGE_FILENAME -C $APACHE_DIRECTORY --strip-components 1 \
+    && cd $APACHE_DIRECTORY \
+    && ./configure --prefix=$APACHE_PREFIX --enable-so --enable-rewrite --enable-ssl > /dev/null \
+    && make > /dev/null \
+    && make install > /dev/null \
+    && rm -rf /$APACHE_PACKAGE_FILENAME \
+    && rm -rf /$APACHE_DIRECTORY
+
+# php version php-7.1.13
+ENV PHP_VERSION php-7.1.13
 
 # php compression package filename
 ENV PHP_PACKAGE_FILENAME $PHP_VERSION.tar.gz
@@ -25,7 +52,6 @@ ENV PHP_INI $PHP_PREFIX/lib/
 # php extension dependent
 ENV PHP_EXTENSION_DEPENDENT \
             libcurl-devel.x86_64 \
-            openssl-devel.x86_64 \
             libjpeg-devel \
             libpng-devel.x86_64 \
             libXpm-devel.x86_64 \
@@ -34,7 +60,6 @@ ENV PHP_EXTENSION_DEPENDENT \
 
 # php extension
 ENV PHP_EXTENSION \
-                --enable-fpm \
                 --with-mysqli=mysqlnd \
                 --with-pdo-mysql=mysqlnd \
                 --with-gd \
@@ -49,13 +74,13 @@ ENV PHP_EXTENSION \
                 --enable-sockets \
                 --enable-mbstring
 
-# keep quiet install command for gcc、wget、make
-RUN yum -y -q install gcc wget make $PHP_EXTENSION_DEPENDENT \
-    && wget -q -O $PHP_PACKAGE_FILENAME $PHP_DOWNLOAD_URL \
+# keep quiet install php_extension
+RUN yum -q -y install $PHP_EXTENSION_DEPENDENT \
+    && wget -q -O $PHP_PACKAGE_FILENAME http://cn2.php.net/distributions/$PHP_PACKAGE_FILENAME \
     && mkdir $PHP_DIRECTORY \
     && tar -zxf $PHP_PACKAGE_FILENAME -C $PHP_DIRECTORY --strip-components 1 \
     && cd $PHP_DIRECTORY \
-    && ./configure --prefix=$PHP_PREFIX $PHP_EXTENSION > /dev/null \
+    && ./configure --prefix=$PHP_PREFIX --with-apxs2=$APACHE_PREFIX/bin/apxs > /dev/null \
     && make -s \
     && make install \
     && cp php.ini-development $PHP_PREFIX/lib/php.ini \
@@ -63,9 +88,8 @@ RUN yum -y -q install gcc wget make $PHP_EXTENSION_DEPENDENT \
     && rm -rf /$PHP_DIRECTORY \
     && yum -q -y remove gcc wget make
 
-# expose 9000
-EXPOSE 9000
+# expose 80
+EXPOSE 80
 
-# start php-fpm
-# -F force to stay in foreground, and ignore daemonize option from config file
-ENTRYPOINT $PHP_PREFIX/sbin/php-fpm -c $PHP_PREFIX/lib/php.ini -y $PHP_PREFIX/etc/php-fpm.conf.default -F
+# start apache
+ENTRYPOINT $APACHE_PREFIX/bin/apachectl -DFOREGROUND

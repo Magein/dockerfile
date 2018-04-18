@@ -89,7 +89,7 @@
      | vhost     | --enable-vhost-alias |
      | rewrite   | --enable-rewrite     |
      
-### 启动
+### 运行镜像启动apache
     
     dockerfile文件中启动：
         /bin/apachectl -DFOREGROUND 
@@ -102,3 +102,9 @@
     安装目录/bin/apachectl start
      
     执行 curl localhost 能够正常访问，说明已经安装成功
+    
+### 支持php
+    
+    需要在apache的配置文件中加载 libphpx.so
+    
+    并且支持php文件：AddType application/x-httpd-php .php

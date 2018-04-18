@@ -55,9 +55,10 @@ RUN yum -y -q install gcc wget make $PHP_EXTENSION_DEPENDENT \
     && mkdir $PHP_DIRECTORY \
     && tar -zxf $PHP_PACKAGE_FILENAME -C $PHP_DIRECTORY --strip-components 1 \
     && cd $PHP_DIRECTORY \
-    && ./configure --prefix=$PHP_PREFIX --with-config-file-path=$PHP_INI $PHP_EXTENSION > /dev/null \
+    && ./configure --prefix=$PHP_PREFIX $PHP_EXTENSION > /dev/null \
     && make -s \
     && make install \
+    && cp php.ini-development $PHP_PREFIX/lib/php.ini \
     && rm -rf /$PHP_PACKAGE_FILENAME \
     && rm -rf /$PHP_DIRECTORY \
     && yum -q -y remove gcc wget make
