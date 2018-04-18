@@ -28,6 +28,7 @@ RUN yum -q -y install gcc wget make apr-util-devel.x86_64 pcre-devel.x86_64 open
     && ./configure --prefix=$APACHE_PREFIX --enable-so --enable-rewrite --enable-ssl > /dev/null \
     && make > /dev/null \
     && make install > /dev/null \
+    && cp php.ini-development $PHP_PREFIX/lib/php.ini \
     && rm -rf /$APACHE_PACKAGE_FILENAME \
     && rm -rf /$APACHE_DIRECTORY \
     && rm -rf /var/cache/yum/
