@@ -60,26 +60,32 @@ RUN yum -y -q install gcc wget make $PHP_EXTENSION_DEPENDENT \
     && make install \
     && cp php.ini-development $PHP_PREFIX/lib/php.ini \
     && rm -rf /$PHP_PACKAGE_FILENAME \
-    && rm -rf /$PHP_DIRECTORY \
-    && yum -q -y remove gcc wget make \
-    && rm -rf /var/cache/yum/
+    && rm -rf /$PHP_DIRECTORY
 
+# tar after memcached directory
 ENV MEMCACHED_DIRECTORY /memcached
 
+RUN yum -y -q install m4 autoconf libmemcached-devel.x86_64
+
 # install memcached
-RUN cd $PHP_PREFIX/bin \
-    && ./pecl download memcached \
-    && mkdir $MEMCACHED_DIRECTORY \
-    && tar -xf memcached-x -C $MEMCACHED_DIRECTORY --strip-components 1 \
-    && cd $MEMCACHED_DIRECTORY \
+RUN $PHP_PREFIX/bin/pecl download memcached-2.1.0
+
+RUN mkdir $MEMCACHED_DIRECTORY \
+    && tar -xf memcached-* -C $MEMCACHED_DIRECTORY --strip-components 1
+
+RUN cd $MEMCACHED_DIRECTORY \
     && $PHP_PREFIX/bin/phpize \
     && ./configure --with-php-config=$PHP_PREFIX/bin/php-config > /dev/null \
     && make -s \
     && make install
 
-# expose 9000
-EXPOSE 9000
+# remove command
+#RUN yum -q -y remove gcc wget make \
+#    && rm -rf /var/cache/yum/
 
-# start php-fpm
-# -F force to stay in foreground, and ignore daemonize option from config file
-ENTRYPOINT $PHP_PREFIX/sbin/php-fpm -c $PHP_PREFIX/lib/php.ini -y $PHP_PREFIX/etc/php-fpm.conf.default -F
+# expose 9000
+#EXPOSE 9000
+#
+## start php-fpm
+## -F force to stay in foreground, and ignore daemonize option from config file
+#ENTRYPOINT $PHP_PREFIX/sbin/php-fpm -c $PHP_PREFIX/lib/php.ini -y $PHP_PREFIX/etc/php-fpm.conf.default -F

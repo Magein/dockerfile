@@ -16,7 +16,10 @@
      
     如果是在docker中没有办法进行交互，所以需要使用一下方式安装
     
+    // 根据php版本选择memcached版本，php7.x 系列选择3.0.0以上的版本，测试php5.6搭配2.0.1
+    // 如果版本搭配不正确，会出现错误：#include "Zend/zend_smart_str.h"
     // 下载memcached，指定版本 package-version，下载memcached-3.0.2
+    // 也可以使用wget 在pecl网站下载
     pecl download memcached
      
     // 创建解压文件目录，因为下载的版本是latest版本，所以文件名字会变化，
@@ -29,7 +32,7 @@
     // 进入目录
     cd memcached
      
-    // 生成configure文件,phpize路径要指定正确
+    // 生成configure文件,phpize路径要指定正确,这里需要安装 m4 和 autoconf 可以使用 yum 安装
     phpize
      
     // 开始检查
