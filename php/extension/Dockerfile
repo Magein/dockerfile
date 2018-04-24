@@ -22,6 +22,9 @@ ENV PHP_PREFIX /usr/local/php/
 # php.ini location
 ENV PHP_INI $PHP_PREFIX/lib/
 
+# deps
+ENV BUILD_DEPENDENTS gcc wget make m4 autoconf
+
 # php extension dependent
 ENV PHP_EXTENSION_DEPENDENT \
             libcurl-devel.x86_64 \
@@ -50,7 +53,7 @@ ENV PHP_EXTENSION \
                 --enable-mbstring
 
 # keep quiet install command for gcc、wget、make
-RUN yum -y -q install gcc wget make $PHP_EXTENSION_DEPENDENT \
+RUN yum -y -q install $BUILD_DEPENDENTS $PHP_EXTENSION_DEPENDENT \
     && wget -q -O $PHP_PACKAGE_FILENAME $PHP_DOWNLOAD_URL \
     && mkdir $PHP_DIRECTORY \
     && tar -zxf $PHP_PACKAGE_FILENAME -C $PHP_DIRECTORY --strip-components 1 \
@@ -65,27 +68,20 @@ RUN yum -y -q install gcc wget make $PHP_EXTENSION_DEPENDENT \
 # tar after memcached directory
 ENV MEMCACHED_DIRECTORY /memcached
 
-RUN yum -y -q install m4 autoconf libmemcached-devel.x86_64
-
 # install memcached
-RUN $PHP_PREFIX/bin/pecl download memcached-2.1.0
-
-RUN mkdir $MEMCACHED_DIRECTORY \
-    && tar -xf memcached-* -C $MEMCACHED_DIRECTORY --strip-components 1
-
-RUN cd $MEMCACHED_DIRECTORY \
+RUN $PHP_PREFIX/bin/pecl download memcached-2.1.0 \
+    && mkdir $MEMCACHED_DIRECTORY \
+    && tar -xf memcached-* -C $MEMCACHED_DIRECTORY --strip-components 1 \
+    && cd $MEMCACHED_DIRECTORY \
     && $PHP_PREFIX/bin/phpize \
     && ./configure --with-php-config=$PHP_PREFIX/bin/php-config > /dev/null \
     && make -s \
-    && make install
-
-# remove command
-#RUN yum -q -y remove gcc wget make \
-#    && rm -rf /var/cache/yum/
+    && make install \
+    && yum -q -y remove $BUILD_DEPENDENTS
 
 # expose 9000
-#EXPOSE 9000
+EXPOSE 9000
 #
-## start php-fpm
-## -F force to stay in foreground, and ignore daemonize option from config file
-#ENTRYPOINT $PHP_PREFIX/sbin/php-fpm -c $PHP_PREFIX/lib/php.ini -y $PHP_PREFIX/etc/php-fpm.conf.default -F
+# start php-fpm
+# -F force to stay in foreground, and ignore daemonize option from config file
+ENTRYPOINT $PHP_PREFIX/sbin/php-fpm -c $PHP_PREFIX/lib/php.ini -y $PHP_PREFIX/etc/php-fpm.conf.default -F

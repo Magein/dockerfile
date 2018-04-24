@@ -19,8 +19,11 @@ ENV APACHE_PREFIX /usr/local/apache
 # apache directory
 ENV APACHE_DIRECTORY $APACHE_VERSION
 
+# dependents
+ENV BUILD_DEPENDENTS gcc wget make apr-util-devel.x86_64 pcre-devel.x86_64 perl
+
 # gcc、wget、make、apr-util-devel.x86_64
-RUN yum -q -y install gcc wget make apr-util-devel.x86_64 pcre-devel.x86_64 openssl-devel.x86_64 perl\
+RUN yum -q -y install $BUILD_DEPENDENTS openssl-devel.x86_64 \
     && wget -q -O $APACHE_PACKAGE_FILENAME $APACHE_DOWNLOAD_URL \
     && mkdir $APACHE_DIRECTORY \
     && tar -xzf $APACHE_PACKAGE_FILENAME -C $APACHE_DIRECTORY --strip-components 1 \
@@ -86,8 +89,7 @@ RUN yum -q -y install $PHP_EXTENSION_DEPENDENT \
     && cp php.ini-development $PHP_PREFIX/lib/php.ini \
     && rm -rf /$PHP_PACKAGE_FILENAME \
     && rm -rf /$PHP_DIRECTORY \
-    && yum -q -y remove gcc wget make \
-    && rm -rf /var/cache/yum/
+    && yum -q -y $BUILD_DEPENDENTS
 
 # expose 80
 EXPOSE 80

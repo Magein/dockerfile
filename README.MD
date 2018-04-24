@@ -5,6 +5,14 @@
     dockerfile中的镜像安装步骤都是基于在linux系统中安装的步骤，所以安装的步骤并不局限于生成docker镜像
      
     由于对linux并不是很熟练，所以并没有参考官方的镜像文件思路以及写法，以后有时间会去解读官方镜像
+     
+    docker不是虚拟机
+    docker不是虚拟机
+    docker不是虚拟机
+    
+    docker启动镜像得到一个容器，启动的只是一个进程。
+     
+    虽然主管意识正如上述所述，但是我写的dockerfile文件的思维还是局限于虚拟机安装，所以仅仅是一个学习过程，使用还是使用官方的php镜像 
 
 ### 关于版本
 
@@ -53,6 +61,25 @@
     
     过去出现过兼容问题，但是随着 Docker 的使用，对 Alpine 的需求会越来越多，更多的兼容问题会被发现、修复，所以相信在未来这应该是个不错的选择。但是如果现在就要使用，一定要进行重复的测试，确保没有会影响到自己的 bug。
     
-### 学习docker
-
-    可以参照 ：https://blog.lab99.org/post/docker-2016-07-14-faq.html  
+### 学习
+    
+    在编写dockerfile的时候，学习阶段可以 进行多个 RUN ，这种每一步的错误信息比较直观，并且再次编译的时候之前的会优先缓存获取，会节省等待的时间，如：
+        
+        // 安装php扩展需要的依赖
+        RUN yum -y -q install m4 autoconf libmemcached-devel.x86_64
+        
+        # install memcached
+        RUN $PHP_PREFIX/bin/pecl download memcached-2.1.0
+        
+        RUN mkdir $MEMCACHED_DIRECTORY \
+            && tar -xf memcached-* -C $MEMCACHED_DIRECTORY --strip-components 1
+        
+        RUN cd $MEMCACHED_DIRECTORY \
+            && $PHP_PREFIX/bin/phpize \
+            && ./configure --with-php-config=$PHP_PREFIX/bin/php-config > /dev/null \
+            && make -s \
+            && make install
+    
+    当编译通过生成镜像后，就不建议使用多个RUN，应该合理分层。
+    
+    参照 ：https://blog.lab99.org/post/docker-2016-07-14-faq.html 
