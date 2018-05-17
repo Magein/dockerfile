@@ -22,7 +22,7 @@ RUN set -xe; \
     \
     wget -q -O $NGINX_PACKAGE $NGINX_URL; \
     \
-    wget -q -O $NGINX_SIGN $NGINX_ASC_URL \
+    wget -q -O $NGINX_SIGN $NGINX_ASC_URL; \
     \
     export GNUPGHOME=$(mktemp -d) ; \
     \
@@ -39,7 +39,7 @@ RUN set xe; \
     && make install \
     && make clean
 
-RUN apk del .build-deps && rm -rf nginx*
+RUN apk del .build-deps && rm -rf $NGINX_PACKAGE
 
 ENTRYPOINT nginx -g "daemon off;"
 
