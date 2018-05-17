@@ -55,10 +55,10 @@ RUN yum -y -q install gcc wget make $PHP_EXTENSION_DEPENDENT \
     && mkdir $PHP_DIRECTORY \
     && tar -zxf $PHP_PACKAGE_FILENAME -C $PHP_DIRECTORY --strip-components 1 \
     && cd $PHP_DIRECTORY \
-    && ./configure --prefix=$PHP_PREFIX $PHP_EXTENSION > /dev/null \
+    && ./configure $PHP_EXTENSION > /dev/null \
     && make -s \
     && make install \
-    && cp php.ini-development $PHP_PREFIX/lib/php.ini \
+    && cp php.ini-development /usr/local/lib/php.ini \
     && rm -rf /$PHP_PACKAGE_FILENAME \
     && rm -rf /$PHP_DIRECTORY \
     && yum -q -y remove gcc wget make \
@@ -69,4 +69,4 @@ EXPOSE 9000
 
 # start php-fpm
 # -F force to stay in foreground, and ignore daemonize option from config file
-ENTRYPOINT $PHP_PREFIX/sbin/php-fpm -c $PHP_PREFIX/lib/php.ini -y $PHP_PREFIX/etc/php-fpm.conf.default -F
+ENTRYPOINT php-fpm -F

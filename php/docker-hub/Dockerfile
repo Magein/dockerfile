@@ -5,7 +5,7 @@
 #
 FROM alpine:3.6
 #
-# 镜像基于alpine3.6，alpine构建的镜像相比Ubuntu，Centos为小很多
+# 镜像基于alpine3.6，alpine构建的镜像相比Ubuntu，Centos要小很多，大约只有5M
 #
 
 # dependencies required for running "phpize"
@@ -73,13 +73,20 @@ ENV PHP_LDFLAGS="-Wl,-O1 -Wl,--hash-style=both -pie"
 
 ENV GPG_KEYS 1729F83938DA44E27BA0F4D3DBDB397470D12172 B1B44D8F021E4E2D6021E995DC9FF8D3EE5AF27F
 
-ENV PHP_VERSION 7.2.4
-ENV PHP_URL="https://secure.php.net/get/php-7.2.4.tar.xz/from/this/mirror" PHP_ASC_URL="https://secure.php.net/get/php-7.2.4.tar.xz.asc/from/this/mirror"
+ENV PHP_VERSION 7.2.5
+ENV PHP_URL="https://secure.php.net/get/php-7.2.5.tar.xz/from/this/mirror" PHP_ASC_URL="https://secure.php.net/get/php-7.2.5.tar.xz.asc/from/this/mirror"
 ENV PHP_SHA256="7916b1bd148ddfd46d7f8f9a517d4b09cd8a8ad9248734e7c8dd91ef17057a88" PHP_MD5=""
 #
 # https://secure.php.net/get/php-7.2.4.tar.xz/from/this/mirror 这是下载的地址，在php官网下载页面可以选择不同国家的镜像
-# 比如中国的下载镜像来源是 https://cn2.php.net/get/php-7.2.4.tar.xz，变化的只是二级域名
+# 比如中国的下载镜像来源是 https://cn2.php.net/get/php-7.2.4.tar.xz/from/this/mirror，变化的只是二级域名
+# 请注意/from/this/mirror和/from/a/mirror的区别，/from/a/mirror需要选择一个镜像
 # 我曾经以为是不同国家的php版本会有所不同，所以需要根据国家选择，手动滑稽，php版本区分有5.x、7.x，同一版本下区分linux、window，window下区分线性安全，非线性安全和32、64位
+#
+# 使用这种下载方式会出现302错误，响应location是http://php.net/distributions/php-xxx.tar.xz
+# 也可以使用http://php.net/distributions/php-xxx.tar.xz进行下载
+# 如果出现链接失败的情况，可以重新安装wget，测试中，遇到下载的问题
+#
+# 官方的.bz2、.gz、.xz的压缩包中，xz的压缩包最小，xz也是一个命令，用来解压xz包。使用tar Jxf也能解压
 #
 # 在linux下载的时候需要指定文件名，不指定的话，下载的只是一个普通的mirror文件
 # https://secure.php.net/get/php-7.2.4.tar.xz.asc/from/this/mirror下载秘钥，用于GPG效验
@@ -120,12 +127,20 @@ RUN set -xe; \
 #
 # 上面这些操作是为了检查php包的完整性，在实际操作中，由于各种原因可能会出现丢包的情况，所以要检查包的完整性
 # sha256和md5的值都可以在php官网查询的到
+# sha256sum使用，常规使用 创建一个文件，文件中包含sha256的值和要检验包的，如文件名称为checkfile，文件内容：7916b1bd148ddfd46d7f8f9a517d4b09cd8a8ad9248734e7c8dd91ef17057a88 php.tar.xz
+# sha256sum -c checkfile 请注意文件中不要有多余的行，允许多行，sha256和要检验的文件一一对应，如果有一个验证不通过执行结果非0，即echo $? 输出的是1
+# 文件名称需要带星号,附：centos6.9下测试需要带星号 *php.tar.xz 、 centos7.4测试不需要带星号
 #
+# gpg验证：GNUPGHOME指定钥匙环生成路径
+# gpg --keyserver ha.pool.sks-keyservers.net --recv-keys "$key"; 导入公钥，用户id或者指纹都行
+# 签名验证，需要下载数字证书，使用Ascii显示，需下载下载.asc的文件
+# gpg参考：http://www.ruanyifeng.com/blog/2013/07/gpg.html
 
 COPY docker-php-source /usr/local/bin/
+# docker-php-source是一个shell 放到/usr/local/bin/下，docker-php-source就是一个命令，可以直接使用
 #
-# 将宿主机中的 docker-php-source 文件拷贝到容器/usr/local/bin/
-# docker-php-source 1.解压php源码包到/usr/src/php中，2. 删除/usr/src/php下的源码包
+# docker-php-source命令的作用有两个，1.解压php源码包到/usr/src/php中，2. 删除/usr/src/php下的源码包
+#
 # 请不要随意修改 docker-php-source 中的dir变量，如果需要同步修改下面的 cd /usr/src/php
 #
 
