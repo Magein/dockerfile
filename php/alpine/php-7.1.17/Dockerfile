@@ -70,6 +70,8 @@ RUN set -xe; \
 
 RUN apk del .fetch-deps && rm -rf php.tar.xz
 
+EXPOSE 9000
+
 ENTRYPOINT php-fpm -F
 
 

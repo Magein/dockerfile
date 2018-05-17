@@ -41,6 +41,8 @@ RUN set xe; \
 
 RUN apk del .build-deps && rm -rf $NGINX_PACKAGE
 
+EXPOSE 80
+
 ENTRYPOINT nginx -g "daemon off;"
 
 
