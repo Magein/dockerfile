@@ -14,9 +14,7 @@ RUN apk add --no-cache --virtual .build-deps \
     g++ \
     wget \
     gnupg \
-    make \
-    pcre-dev \
-    zlib-dev
+    make
 
 RUN set -xe; \
     \
@@ -30,6 +28,8 @@ RUN set -xe; \
     \
     gpg --verify $NGINX_SIGN $NGINX_PACKAGE
 
+RUN apk add --no-cache pcre-dev zlib-dev
+
 RUN set xe; \
     mkdir /nginx ; \
     tar -xf $NGINX_PACKAGE -C /nginx --strip-components 1 ; \
@@ -39,10 +39,8 @@ RUN set xe; \
     && make install \
     && make clean
 
-RUN apk del .build-deps && rm -rf $NGINX_PACKAGE
+RUN apk del .build-deps && rm -rf $NGINX_PACKAGE $NGINX_SIGN
 
 EXPOSE 80
 
 ENTRYPOINT nginx -g "daemon off;"
-
-
