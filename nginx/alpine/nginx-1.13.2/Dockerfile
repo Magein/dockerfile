@@ -37,9 +37,9 @@ RUN set xe; \
     && ./configure --sbin-path=/usr/sbin \
     && make \
     && make install \
-    && make clean
-
-RUN apk del .build-deps && rm -rf $NGINX_PACKAGE $NGINX_SIGN
+    && make clean \
+    && rm -rf nginx* \
+    && apk del .build-deps
 
 EXPOSE 80
 

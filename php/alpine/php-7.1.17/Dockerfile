@@ -1,6 +1,6 @@
-# from alpine 3.6
 FROM alpine:3.6
 
+# 编译 安装需要的命令
 RUN apk add --no-cache --virtual .fetch-deps \
         autoconf \
         dpkg-dev dpkg \
@@ -11,15 +11,19 @@ RUN apk add --no-cache --virtual .fetch-deps \
         make \
         pkgconf \
         re2c \
-        libxml2-dev \
         gnupg \
-        wget \
-        curl-dev \
-        gd-dev \
-        jpeg-dev \
-        libpng-dev \
-        freetype-dev
+        wget
 
+# php支持扩展需要的依赖，不能删除
+RUN apk add --no-cache --virtual .build-deps \
+         libxml2-dev \
+         curl-dev \
+         gd-dev \
+         jpeg-dev \
+         libpng-dev \
+         freetype-dev
+
+# php支持的扩展列表
 ENV PHP_SUPPORT \
         --enable-fpm \
         --enable-mysqlnd \
@@ -66,12 +70,10 @@ RUN set -xe; \
     && ./configure $PHP_SUPPORT --with-config-file-path=/usr/local/etc \
     && make \
     && make install \
-    && make clean
-
-RUN apk del .fetch-deps && rm -rf php.tar.xz
+    && make clean \
+    && rm -rf php* \
+    && apk del .fetch-deps
 
 EXPOSE 9000
 
 ENTRYPOINT php-fpm -F
-
-

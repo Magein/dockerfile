@@ -8,7 +8,7 @@
     
     Alpine Linux是一款基于 musl libc和 Busybox的面向安全的轻量级Linux发行版。
      
-    需要对alpine有一些基础了解
+    需要对alpine有一些基础了解       
     
 
 
