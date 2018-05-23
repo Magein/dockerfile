@@ -74,8 +74,6 @@ RUN set -xe; \
     && rm -rf php* \
     && apk del .fetch-deps
 
-COPY conf /usr/local/etc
-
 EXPOSE 9000
 
 ENTRYPOINT php-fpm -F

@@ -1,8 +1,27 @@
-worker_processes  1;
-events{
+#!/usr/bin/env bash
+
+if [ $1 ]; then
+    directory=$1
+else
+    directory="./"
+fi
+
+if [ ! -d "$directory" ]; then
+    mkdir -p "$directory"
+fi
+
+filePath="$directory/nginx.conf"
+
+if [ ! -f "$filePath" ]; then
+    touch "$filePath"
+fi
+
+{
+    echo "worker_processes  1;"
+    echo "events{
         worker_connections  1024;
-    }
-http{
+    }"
+    echo "http{
 
         include       mime.types;
 
@@ -41,8 +60,10 @@ http{
             {
                 fastcgi_pass   127.0.0.1:9000;
                 fastcgi_index  index.php;
-                fastcgi_param  SCRIPT_NAME      /scripts$fastcgi_script_name;
+                fastcgi_param  SCRIPT_NAME      /scripts\$fastcgi_script_name;
                 include        fastcgi_params;
             }
         }
-    }
+    }"
+
+} | tee "$filePath"
