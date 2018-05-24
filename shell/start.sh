@@ -1,18 +1,17 @@
 #!/bin/sh
 
+# 检测docker是否安装
 which docker
 if [ $? -eq 1 ]; then
-    echo 'error'
-    echo 'please install docker,version greater than 17.x'
+    echo "please install docker,version greater than 17.x"
     exit 1
 fi
 
+# 检测docker版本
 version=$(docker --version | awk '{print $3}' | awk -F. '{print $1}')
-
 if [ "$version" -lt 17 ]; then
-    echo 'error'
     echo $(docker --version)
-    echo 'docker version should greater 17.x'
+    echo "docker version should greater 17.x"
     exit 1
 fi
 
@@ -72,6 +71,22 @@ services:
 
 yml
 
+# 启动docker
+which systemctl
+if [ $? -eq 0 ]; then
+    systemctl status docker
+    if [ $? -ne 0 ];then
+        systemctl start docker
+    fi
+else
+    service docker status
+    if [ $? -ne 0 ];then
+        service docker start
+    fi
+fi
+
+# 启动swarm
 docker swarm init
 
+# 启动服务
 docker stack deploy -c yml web
