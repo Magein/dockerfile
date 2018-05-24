@@ -1,5 +1,21 @@
 #!/bin/sh
 
+which docker
+if [ $? -eq 1 ]; then
+    echo 'error'
+    echo 'please install docker,version greater than 17.x'
+    exit 1
+fi
+
+version=$(docker --version | awk '{print $3}' | awk -F. '{print $1}')
+
+if [ "$version" -lt 17 ]; then
+    echo 'error'
+    echo $(docker --version)
+    echo 'docker version should greater 17.x'
+    exit 1
+fi
+
 source ./common.sh
 source ./config.sh
 
@@ -56,6 +72,6 @@ services:
 
 yml
 
-docker swarm init > /dev/null
+docker swarm init
 
 docker stack deploy -c yml web
