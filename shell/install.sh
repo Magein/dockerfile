@@ -8,6 +8,7 @@ usage(){
     echo "Options:"
     echo "  -c, --check              Check install environment"
     echo "  -h, --help               Show information for help"
+    echo "  -q, --quiet              Quiet operation"
     echo "  -r, --remove             If already installed,then remove"
     echo "  -s, --show               Display the docker version of the optional installation"
     echo "  -v, --version            The version of the docker to install"
@@ -15,63 +16,95 @@ usage(){
 
 # 显示可选的docker版本
 show(){
-    result=$(yum list docker-ce --showduplicates | sort -r | grep docker-ce)
-    if [ ! $1 ]; then
-        echo -e "$result"
-    fi
+    registries=$(yum list docker-ce --showduplicates | sort -r | grep docker-ce)
+
+    echo -e "$registries"
 }
 
 # 检测系统环境
 check(){
-    result=1
+    result="true"
     # 检测是否为centOS系统
-    cat /etc/redhat-release | grep CentOS > /dev/null
+    cat /etc/redhat-release | grep CentOS > /dev/null 2>&1
     if [ $? -eq 1 ]; then
-        result=0
-        echo "Not the CentOS system"
+        result="false"
     fi
+    echo "CentOS System:                $result"
 
     # 检测内核版本
     kernel=$(uname -r | awk -F. '{print $1}')
     if [ "$kernel" -lt 3 ]; then
-        result=0
-        echo $(uname -r)
-        echo "The kernel version needs more than 3"
+        result="false"
     fi
+    echo "Kernel version:               $result"
 
-    if [ "$result" -eq 1 ]; then
-        echo "Check pass"
-        return 0
+    # 检测是否有yum权限
+    sudo -l | grep /usr/bin/yum > /dev/null 2>&1
+    if [ $? -ne 0 ]; then
+        result="false"
     fi
+    echo "Yum permission:               $result"
 
-    return 1
+    # 检测是否有yum-config-manager权限
+    sudo -l | grep /usr/bin/yum-config-manager > /dev/null 2>&1
+    if [ $? -ne 0 ]; then
+        result="false"
+    fi
+    echo "Config manager permission:    $result"
+
+    # 是否已经安装docker
+    docker --version > /dev/null 2>&1
+    if [ $? -eq 0 ]; then
+        result=$(docker --version | awk '{print $3}' | awk -F, '{print $1}')
+        exist_version="$result"
+    else
+        result=null
+    fi
+    echo "Installed docker version:     $result"
+
+    return 0
 }
 
 # 安装docker
 install(){
-    # 删除docker相关信息
-    sudo yum remove -y docker \
-                    docker-client \
-                    docker-client-latest \
-                    docker-common \
-                    docker-latest \
-                    docker-latest-logrotate \
-                    docker-logrotate \
-                    docker-selinux \
-                    docker-engine-selinux \
-                    docker-engine
 
-    # 安装所需的包
-    sudo yum install -y yum-utils \
-                    device-mapper-persistent-data \
-                    lvm2
+    old=(docker \
+            docker-client \
+            docker-client-latest \
+            docker-common \
+            docker-latest \
+            docker-latest-logrotate \
+            docker-logrotate \
+            docker-selinux \
+            docker-engine-selinux \
+            docker-engine
+            )
 
-    # 设置稳定的存储库
-    sudo yum-config-manager \
-                    --add-repo \
-                    https://download.docker.com/linux/centos/docker-ce.repo
+    dependent=(yum-utils \
+            device-mapper-persistent-data \
+            lvm2
+         )
 
-    yum -y install docker-ce-"$1"
+    if [ -z $1 ]; then
+        version=`"$registries" | awk 'NR==1{print $2}'`
+    else
+        version=$1
+    fi
+
+    echo ''
+    echo "I will install version $version for you"
+
+    echo 'step 1'
+    sudo yum -y remove "${old[@]}" > /dev/null 2>&1
+    echo 'step 2'
+    sudo yum -y install "${dependent[@]}" > /dev/null 2>&1
+    echo 'step 3'
+    sudo yum-config-manager  --add-repo https://download.docker.com/linux/centos/docker-ce.repo > /dev/null 2>&1
+    echo 'step 4'
+    sudo yum -y install docker-ce-"$version" > /dev/null 2>&1
+    echo 'complete!'
+    echo ''
+    echo 'You can use the command "docker --version" check'
 }
 
 # 倒计时
@@ -90,12 +123,20 @@ countDown(){
     done
 }
 
-options=$(getopt -o chsrv:y --long check,help,remove,show,version: -n "error" -- "$@")
+# 接收参数
+options=$(getopt -o chqsrv: --long check,help,quiet,remove,show,version: -n "error" -- "$@")
+
+# 检测参数是否正确
+if [ $? -ne 0 ]; then
+    exit 0
+fi
 
 eval set -- "$options"
 
+version=
+exist_version=
 remove=0
-goon=0
+quiet=0
 
 while true
 do
@@ -104,21 +145,21 @@ do
             usage
             exit 0
             ;;
-        -s|--show)
-            show
-            exit 0
-            ;;
         -c|--check)
             check
             exit 0
+            ;;
+        -q|--quiet)
+            quiet=1
+            shift 2
             ;;
         -r|--remove)
             remove=1
             shift 1
             ;;
-        -y)
-            goon=1
-            shift 1
+        -s|--show)
+            show
+            exit 0
             ;;
         -v|--version)
             version=$2
@@ -130,37 +171,28 @@ do
     esac
 done
 
-# 是否已经安装docker
-which docker > /dev/null
-if [ $? -eq 0 -a "$remove" -eq 0 ]; then
-    echo "Docker already install"
-    echo $(docker --version)
-    echo "You can use '-r' or '--remove' to force the delete"
-    exit 0
-fi
+show > /dev/null
 
-# 如果选择了版本则验证版本是否正确
-show 1
+check
+
+# 检查选择的版本是否正确
 if [ "$version" ]; then
-    echo -e "$result" | awk '{print $2}' | grep -E "^$version\$"
+    echo -e "$registries" | awk '{print $2}' | grep -E "^$version\$" > /dev/null
     if [ $? -eq 1 ]; then
-        echo "Docker version error"
+        echo "Selected docker version error"
         echo "You can get help information by useing -h or --help"
         echo "Version list:"
-        echo -e "$result" | sed  's/docker/     docker/'
+        echo -e "$registries" | sed  's/docker/     docker/'
         exit 1
     fi
 fi
 
-# 获取最新的docker版本，并且提示即将安装此最新版本
-version=`echo "$result" | awk 'NR==1{print $2}'`
-if [ "$goon" -eq 0 ]; then
-    read -p "You will install version $version,entry y will continue: " -n 1 keep
-    if [ "$keep" != "y" ]; then
-        exit 1
-    fi
-else
-    echo "I will install version $version for you"
+if [ -n "$exist_version" -a "$remove" -ne 1 ]; then
+    echo ""
+    echo "Docker already install"
+    echo "Docker version: $exist_version"
+    echo "You can use '-r' or '--remove' to force the delete"
+    exit 0
 fi
 
 countDown 5
