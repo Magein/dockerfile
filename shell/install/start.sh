@@ -3,8 +3,8 @@
 # 显示帮助信息
 usage(){
     echo "Usage:"
-    echo "  install [options]"
-    echo "  install -o --version 17.09.0.ce-1.el7.centos"
+    echo "  start [options]"
+    echo "  start -o --version 17.09.0.ce-1.el7.centos"
     echo "Options:"
     echo "  -c, --check              Check install environment"
     echo "  -h, --help               Show information for help"
@@ -39,9 +39,11 @@ check(){
     echo "Kernel version:               $result"
 
     # 检测是否有yum权限
-    sudo -l | grep /usr/bin/yum > /dev/null 2>&1
-    if [ $? -ne 0 ]; then
-        result="false"
+    if [ "$USER" != "root" ]; then
+        sudo -l | grep /usr/bin/yum > /dev/null 2>&1
+        if [ $? -ne 0 ]; then
+            result="false"
+        fi
     fi
     echo "Yum permission:               $result"
 
@@ -53,8 +55,7 @@ check(){
     echo "Config manager permission:    $result"
 
     # 是否已经安装docker
-    docker --version > /dev/null 2>&1
-    if [ $? -eq 0 ]; then
+    if [ -f /usr/bin/docker ]; then
         result=$(docker --version | awk '{print $3}' | awk -F, '{print $1}')
         exist_version="$result"
     else
