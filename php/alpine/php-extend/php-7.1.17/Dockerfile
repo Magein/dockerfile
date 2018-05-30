@@ -1,20 +1,5 @@
-FROM registry.cn-hangzhou.aliyuncs.com/magein/alpine-deps:3.6
+FROM registry.cn-hangzhou.aliyuncs.com/magein/alpine-deps:1.0
 
-# 编译 安装需要的命令
-RUN apk add --no-cache --virtual .fetch-deps \
-        autoconf \
-        dpkg-dev dpkg \
-        file \
-        g++ \
-        gcc \
-        libc-dev \
-        make \
-        pkgconf \
-        re2c \
-        gnupg \
-        wget
-
-# php支持扩展需要的依赖，不能删除
 RUN apk add --no-cache --virtual .build-deps \
          libxml2-dev \
          curl-dev \
@@ -23,7 +8,6 @@ RUN apk add --no-cache --virtual .build-deps \
          libpng-dev \
          freetype-dev
 
-# php支持的扩展列表
 ENV PHP_SUPPORT \
         --enable-fpm \
         --enable-mysqlnd \

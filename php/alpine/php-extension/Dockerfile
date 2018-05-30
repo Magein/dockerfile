@@ -1,9 +1,3 @@
-FROM alpine-php-5.6.35:latest
+FROM php-5.6.36-entension
 
-RUN apk add --no-cache --virtual .fetch-deps \
-            gcc \
-            g++ \
-            make \
-            autoconf
-
-RUN pecl install redis && apk del .fetch-deps
+RUN pecl install redis

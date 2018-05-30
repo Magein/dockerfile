@@ -1,4 +1,4 @@
-FROM registry.cn-hangzhou.aliyuncs.com/magein/alpine-deps:3.6
+FROM registry.cn-hangzhou.aliyuncs.com/magein/alpine-deps:1.0
 
 # php支持扩展需要的依赖，不能删除
 RUN apk add --no-cache --virtual .build-deps \
