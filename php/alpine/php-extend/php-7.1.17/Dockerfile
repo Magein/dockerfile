@@ -1,4 +1,4 @@
-FROM alpine:3.6
+FROM registry.cn-hangzhou.aliyuncs.com/magein/alpine-deps:3.6
 
 # 编译 安装需要的命令
 RUN apk add --no-cache --virtual .fetch-deps \
@@ -72,8 +72,7 @@ RUN set -xe; \
     && make install \
     && make clean \
     && rm -rf php* \
-    && rm -rf /tmp/pear \
-    && apk del .fetch-deps
+    && rm -rf /tmp/pear
 
 EXPOSE 9000
 

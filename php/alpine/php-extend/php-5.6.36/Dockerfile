@@ -1,18 +1,4 @@
-FROM alpine:3.6
-
-# 编译 安装需要的命令
-RUN apk add --no-cache --virtual .fetch-deps \
-        autoconf \
-        dpkg-dev dpkg \
-        file \
-        g++ \
-        gcc \
-        libc-dev \
-        make \
-        pkgconf \
-        re2c \
-        gnupg \
-        wget
+FROM registry.cn-hangzhou.aliyuncs.com/magein/alpine-deps:3.6
 
 # php支持扩展需要的依赖，不能删除
 RUN apk add --no-cache --virtual .build-deps \
@@ -37,10 +23,10 @@ ENV PHP_SUPPORT \
         --with-zlib-dir \
         --with-freetype-dir
 
-ENV PHP_VERSION 7.1.17
+ENV PHP_VERSION 5.6.36
 ENV PHP_URL "http://cn2.php.net/get/php-$PHP_VERSION.tar.xz/from/this/mirror"
-ENV PHP_SHA256 "1a784806866e06367f7a5c88775d239d6f30041c7ce65a8232d03a3d4de56d56"
-ENV GPG_KEYS A917B1ECDA84AEC2B568FED6F50ABC807BD5DCD0 528995BFEDFBA7191D46839EF9BA0ADA31CBD89E 1729F83938DA44E27BA0F4D3DBDB397470D12172
+ENV PHP_SHA256 "18f536bf548e909b4e980379d0c4e56d024b2b1eb1c9768fd169360491f1d6dd"
+ENV GPG_KEYS 6E4F6AB321FDC07F2C332E3AC2BF0BC433CFC8B3 0BD78B5F97500D450838F95DFE857D9A90D90EC1
 ENV PHP_ASC_URL "http://cn2.php.net/get/php-$PHP_VERSION.tar.xz.asc/from/this/mirror"
 
 RUN set -xe; \
@@ -72,8 +58,7 @@ RUN set -xe; \
     && make install \
     && make clean \
     && rm -rf php* \
-    && rm -rf /tmp/pear \
-    && apk del .fetch-deps
+    && rm -rf /tmp/pear
 
 EXPOSE 9000
 

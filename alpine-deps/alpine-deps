@@ -1,0 +1,68 @@
+#!/bin/sh
+
+usage(){
+    echo "Usage:"
+    echo "  manager dependent, create or delete,default create"
+    echo "  alpine-deps [options]"
+    echo "  alpine-deps -d"
+    echo "Options:"
+    echo "  -d,--delete             delete dependents"
+    echo "  -h,--help               show information for help"
+}
+
+
+options=$(getopt -o dh --long delete,help -n "error" -- "$@")
+
+if [ $? -ne 0 ]; then
+   exit 0
+fi
+
+eval set -- "${options}"
+
+delete=0
+
+while true;
+do
+    case $1 in
+        -d|--delete)
+            delete=1
+            shift 1
+        ;;
+        -h|--help)
+            usage
+            exit 0
+        ;;
+        *)
+            break
+        ;;
+    esac
+done
+
+if [ "$delete" -eq 1 ]; then
+    apk del autoconf \
+        dpkg-dev \
+        dpkg \
+        file \
+        g++ \
+        gcc \
+        libc-dev \
+        make \
+        pkgconf \
+        re2c \
+        gnupg \
+        wget
+else
+    apk add --no-cache autoconf \
+        dpkg-dev \
+        dpkg \
+        file \
+        g++ \
+        gcc \
+        libc-dev \
+        make \
+        pkgconf \
+        re2c \
+        gnupg \
+        wget
+fi
+

@@ -108,11 +108,11 @@ composer="$PWD"
 composer_file="$composer/composer.yml"
 conf="/usr/local/docker/"
 
-nginx_conf="$conf/nginx.conf"
-php_ini="$conf/php.ini"
-php_fpm_conf="$conf/php-fpm.conf"
-pool="$conf/php-fpm.d"
-pool_conf="$pool/www"
+nginx_conf="${conf}nginx.conf"
+php_ini="${conf}php.ini"
+php_fpm_conf="${conf}php-fpm.conf"
+pool="${conf}php-fpm.d/"
+pool_conf="${pool}www.conf"
 web="/var/www/"
 log="/var/log/"
 nginx_log="${log}nginx/"
@@ -186,7 +186,7 @@ check
 
 segmentation "Check pass"
 
-if [ -z "$source" ]; then
+if [ -n "$source" ]; then
     nginx="$source$nginx"
     php="$source$php"
 fi

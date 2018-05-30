@@ -72,6 +72,7 @@ RUN set -xe; \
     && make install \
     && make clean \
     && rm -rf php* \
+    && rm -rf /tmp/pear \
     && apk del .fetch-deps
 
 EXPOSE 9000
