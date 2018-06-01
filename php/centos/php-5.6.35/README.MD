@@ -8,6 +8,8 @@
         
         php.ini配置中的display_errors 设置为 on
         
+    3. 5.6的php-fpm配置文件和pool的配置是在一起的，但是可以使用include包含，所以5.6的可以把配置文件分离，风格修改为跟7.x系列一直
+        
     
     
     

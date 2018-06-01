@@ -10,7 +10,6 @@ usage(){
     echo "  -h,--help               show information for help"
 }
 
-
 options=$(getopt -o dh --long delete,help -n "error" -- "$@")
 
 if [ $? -ne 0 ]; then
@@ -65,4 +64,3 @@ else
         gnupg \
         wget
 fi
-

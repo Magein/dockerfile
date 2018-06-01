@@ -1,3 +1,7 @@
-FROM php-5.6.36-entension
+FROM alpine-php:5.6
 
-RUN pecl install redis
+RUN apk add --no-cache --virtual .dependent autoconf make gcc g++
+
+COPY php-ext /usr/local/bin/php-ext
+
+RUN chmod u+x /usr/local/bin/php-ext && php-ext && apk del .dependent

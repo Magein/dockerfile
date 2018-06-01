@@ -1,22 +1,11 @@
-# from the centso system and version 7
-FROM centos:centos7
+FROM centos:7
 
-# author magein
 MAINTAINER magein
 
-# php version 5.6.35
-ENV PHP_VERSION php-5.6.35
-
-# php compression package filename
+ENV PHP_VERSION php-7.1.13
 ENV PHP_PACKAGE_FILENAME $PHP_VERSION.tar.gz
-
-# php downloads the url
 ENV PHP_DOWNLOAD_URL http://cn2.php.net/distributions/$PHP_PACKAGE_FILENAME
 
-# dicectory name after unzip
-ENV PHP_DIRECTORY $PHP_VERSION
-
-# php extension dependent
 ENV PHP_EXTENSION_DEPENDENT \
             libcurl-devel.x86_64 \
             openssl-devel.x86_64 \
@@ -26,7 +15,6 @@ ENV PHP_EXTENSION_DEPENDENT \
             freetype-devel.x86_64 \
             libxml2-devel.x86_64
 
-# php extension
 ENV PHP_EXTENSION \
                 --enable-fpm \
                 --with-mysqli=mysqlnd \
@@ -43,24 +31,17 @@ ENV PHP_EXTENSION \
                 --enable-sockets \
                 --enable-mbstring
 
-# keep quiet install command for gcc、wget、make
 RUN yum -y -q install gcc wget make $PHP_EXTENSION_DEPENDENT \
     && wget -q -O $PHP_PACKAGE_FILENAME $PHP_DOWNLOAD_URL \
-    && mkdir $PHP_DIRECTORY \
-    && tar -zxf $PHP_PACKAGE_FILENAME -C $PHP_DIRECTORY --strip-components 1 \
-    && cd $PHP_DIRECTORY \
+    && mkdir /php \
+    && tar -zxf $PHP_PACKAGE_FILENAME -C /php --strip-components 1 \
+    && cd /php \
     && ./configure $PHP_EXTENSION > /dev/null \
     && make -s \
     && make install \
-    && cp php.ini-development /usr/local/lib/php.ini \
-    && rm -rf /$PHP_PACKAGE_FILENAME \
-    && rm -rf /$PHP_DIRECTORY \
-    && yum -q -y remove gcc wget make \
-    && rm -rf /var/cache/yum/
+    && rm -rf /php* /tmp/pear /var/cache/yum/ \
+    && yum -q -y remove gcc wget make
 
-# expose 9000
 EXPOSE 9000
 
-# start php-fpm
-# -F force to stay in foreground, and ignore daemonize option from config file
 ENTRYPOINT php-fpm -F

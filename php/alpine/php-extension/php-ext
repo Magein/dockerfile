@@ -1,0 +1,28 @@
+#!/bin/sh
+commands(){
+    for command in $@;
+    do
+        if [ ! -f "/usr/local/bin/$command" ]; then
+            echo "$command not found"
+            exit 1
+        fi
+    done
+}
+
+extensions(){
+    for extension in $@;
+    do
+        pecl install "$extension"
+    done
+}
+
+# Install memcached need dependent libmemcached-dev and cyrus-sasl-dev
+memcached(){
+    apk add --no-cache libmemcached-dev cyrus-sasl-dev
+    pecl install memcached-2.1.0
+}
+commands php pecl phpize
+
+memcached
+
+#extensions redis-4.0.1

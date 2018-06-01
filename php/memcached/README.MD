@@ -14,7 +14,7 @@
      
     使用上述方式安装，会出现一个问题让你回答，需要使用回车键
      
-    如果是在docker中没有办法进行交互，所以需要使用一下方式安装
+    如果是在docker中没有办法进行交互，所以需要使用以下方式安装
     
     // 根据php版本选择memcached版本，php7.x 系列选择3.0.0以上的版本，测试php5.6搭配2.0.1
     // 如果版本搭配不正确，会出现错误：#include "Zend/zend_smart_str.h"
@@ -46,3 +46,17 @@
 ### redis 
 
     安装形式跟安装memcached一样，
+    
+### 出错
+    	make: *** [Makefile:181: php_memcached.lo] Error 1
+    	 
+      	make: *** [php_memcached.lo] Error 1
+      	 
+      	#include "Zend/zend_smart_str.h"
+      	 
+      	1. 版本选择错误
+      	    5.6 搭配2.1.0
+      	    7.x 搭配3.x
+      	    
+        2. 缺少依赖
+            cyrus-sasl
