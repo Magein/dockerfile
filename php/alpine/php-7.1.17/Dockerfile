@@ -18,6 +18,7 @@ RUN apk add --no-cache --virtual .fetch-deps \
 RUN apk add --no-cache --virtual .build-deps \
          libxml2-dev \
          curl-dev \
+         openssl-dev \
          gd-dev \
          jpeg-dev \
          libpng-dev \
@@ -27,7 +28,7 @@ RUN apk add --no-cache --virtual .build-deps \
 ENV PHP_SUPPORT \
         --enable-fpm \
         --enable-mysqlnd \
-        --with-curl \
+        --with-openssl \
         --enable-mbstring \
         --disable-cgi \
         --with-curl \
