@@ -28,6 +28,8 @@ RUN apk add --no-cache --virtual .build-deps \
 ENV PHP_SUPPORT \
         --enable-fpm \
         --enable-mysqlnd \
+        --with-mysqli=mysqlnd \
+        --with-pdo-mysql=mysqlnd \
         --with-openssl \
         --enable-mbstring \
         --disable-cgi \
