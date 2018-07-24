@@ -9,20 +9,24 @@ commands(){
     done
 }
 
+# Install memcached need dependent libmemcached-dev and cyrus-sasl-dev
+# 5.6~ 2.1.0
+# 7.~ 3.x
+memcached(){
+    apk add --no-cache libmemcached-dev cyrus-sasl-dev
+}
+
 extensions(){
     for extension in $@;
     do
+        if [[ "$extension" =~ "memcached"  ]]; then
+            memcached
+        fi
+    
         pecl install "$extension"
     done
 }
 
-# Install memcached need dependent libmemcached-dev and cyrus-sasl-dev
-memcached(){
-    apk add --no-cache libmemcached-dev cyrus-sasl-dev
-    pecl install memcached-2.1.0
-}
 commands php pecl phpize
 
-memcached
-
-#extensions redis-4.0.1
+#extensions redis-4.0.1 memcached-2.1.0 xdebug-2.6.0
