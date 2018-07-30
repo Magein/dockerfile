@@ -26,7 +26,7 @@ RUN set -xe; \
     \
     gpg --keyserver keyserver.ubuntu.com --recv-keys B0F4253373F8F6F510D42178520A9993A1C052F8; \
     \
-    gpg --verify $NGINX_SIGN $NGINX_PACKAGE
+    gpg --verify $NGINX_SIGN $NGINX_PACKAGE ;
 
 RUN apk add --no-cache pcre-dev zlib-dev
 
@@ -40,6 +40,8 @@ RUN set xe; \
     && make clean \
     && rm -rf /nginx \
     && rm -rf /$NGINX_PACKAGE \
+    && rm -rf /$NGINX_SIGN \
+    && rm -rf /tmp \
     && apk del .build-deps
 
 RUN apk add --no-cache tzdata \

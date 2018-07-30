@@ -73,6 +73,7 @@ RUN mkdir -p /php \
     && make clean \
     && rm -rf /php \
     && rm -rf /php.tar.xz \
+    && rm -rf /php.tar.xz.asc \
     && rm -rf /tmp/pear \
     && apk del .fetch-deps
 
