@@ -4,4 +4,4 @@ ENV ZONE="Asia/Shanghai"
 RUN apk add --no-cache tzdata \
     && echo "$ZONE" > /etc/timezone \
     && rm -rf /usr/locatime \
-    && ln -sf /usr/share/zoneinfo/$ZONE /etc/localtime \
+    && ln -sf /usr/share/zoneinfo/$ZONE /etc/localtime

@@ -79,11 +79,10 @@ RUN set -xe; \
     && rm -rf /tmp/pear \
     && apk del .fetch-deps
 
-ENV ZONE="Asia/Shanghai"
 RUN apk add --no-cache tzdata \
-    && echo "$ZONE" > /etc/timezone \
+    && echo "Asia/Shanghai" > /etc/timezone \
     && rm -rf /usr/locatime \
-    && ln -sf /usr/share/zoneinfo/$ZONE /etc/localtime \
+    && ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 
 EXPOSE 9000
 
