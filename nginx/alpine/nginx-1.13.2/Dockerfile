@@ -38,8 +38,15 @@ RUN set xe; \
     && make \
     && make install \
     && make clean \
-    && rm -rf nginx* \
+    && rm -rf nginx \
+    && rm -rf $NGINX_PACKAGE \
     && apk del .build-deps
+
+ENV ZONE="Asia/Shanghai"
+RUN apk add --no-cache tzdata \
+    && echo "$ZONE" > /etc/timezone \
+    && rm -rf /usr/locatime \
+    && ln -sf /usr/share/zoneinfo/$ZONE /etc/localtime \
 
 EXPOSE 80
 

@@ -79,6 +79,12 @@ RUN set -xe; \
     && rm -rf /tmp/pear \
     && apk del .fetch-deps
 
+ENV ZONE="Asia/Shanghai"
+RUN apk add --no-cache tzdata \
+    && echo "$ZONE" > /etc/timezone \
+    && rm -rf /usr/locatime \
+    && ln -sf /usr/share/zoneinfo/$ZONE /etc/localtime \
+
 EXPOSE 9000
 
 ENTRYPOINT php-fpm -F
