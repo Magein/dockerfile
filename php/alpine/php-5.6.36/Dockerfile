@@ -74,7 +74,8 @@ RUN set -xe; \
     && make \
     && make install \
     && make clean \
-    && rm -rf php* \
+    && rm -rf php \
+    && rm -rf php.tar.xz \
     && rm -rf /tmp/pear \
     && apk del .fetch-deps
 
