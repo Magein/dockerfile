@@ -64,10 +64,14 @@ RUN set -xe; \
         rm -rf "$GNUPGHOME"; \
     fi;
 
+RUN set -x \
+    && addgroup -g 82 -S www-data \
+    && adduser -u 82 -D -S -G www-data www-data
+
 RUN mkdir -p /php \
     && tar -Jxf php.tar.xz -C /php --strip-components=1 \
     && cd /php \
-    && ./configure $PHP_SUPPORT --with-config-file-path=/usr/local/etc \
+    && ./configure $PHP_SUPPORT --with-config-file-path=/usr/local/etc -with-fpm-user=www-data --with-fpm-group=www-data \
     && make > /dev/null 2>&1 \
     && make install > /dev/null 2>&1 \
     && make clean \
