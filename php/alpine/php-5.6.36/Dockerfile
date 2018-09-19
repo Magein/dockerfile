@@ -1,28 +1,4 @@
-FROM alpine:3.6
-
-# 编译 安装需要的命令
-RUN apk add --no-cache --virtual .fetch-deps \
-        autoconf \
-        dpkg-dev dpkg \
-        file \
-        g++ \
-        gcc \
-        libc-dev \
-        make \
-        pkgconf \
-        re2c \
-        gnupg \
-        wget
-
-# php支持扩展需要的依赖，不能删除
-RUN apk add --no-cache --virtual .build-deps \
-         libxml2-dev \
-         curl-dev \
-         openssl-dev \
-         gd-dev \
-         jpeg-dev \
-         libpng-dev \
-         freetype-dev
+FROM registry.cn-hangzhou.aliyuncs.com/magein/alpine-deps-php:latest
 
 # php支持的扩展列表
 ENV PHP_SUPPORT \
@@ -83,7 +59,7 @@ RUN set -xe; \
     && rm -rf /php.tar.xz \
     && rm -rf /php.tar.xz.asc \
     && rm -rf /tmp/pear \
-    && apk del .fetch-deps
+    && alpine-deps -d
 
 RUN apk add --no-cache tzdata \
     && echo "Asia/Shanghai" > /etc/timezone \
