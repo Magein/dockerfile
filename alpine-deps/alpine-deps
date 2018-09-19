@@ -37,21 +37,12 @@ do
     esac
 done
 
+
 if [ "$delete" -eq 1 ]; then
-    apk del autoconf \
-        dpkg-dev \
-        dpkg \
-        file \
-        g++ \
-        gcc \
-        libc-dev \
-        make \
-        pkgconf \
-        re2c \
-        gnupg \
-        wget
+    apk del .build-deps
 else
-    apk add --no-cache autoconf \
+    apk add --no-cache --virtual .build-deps \
+        autoconf \
         dpkg-dev \
         dpkg \
         file \
