@@ -9,9 +9,7 @@
 ### 依赖镜像
 
    > 依赖单独的 alpine-deps 镜像 ，这里的只是为php单独设计
-   
-   > alpine-deps的地址
     
-   > dockerfile :https://github.com/Magein/dockerfile/tree/master/alpine-deps
+   > dockerfile地址：[https://github.com/Magein/dockerfile/tree/master/alpine-deps](https://github.com/Magein/dockerfile/tree/master/alpine-deps)
    
-   > 镜像地址：registry.cn-hangzhou.aliyuncs.com/magein/alpine-deps
+   > alpine-deps镜像：registry.cn-hangzhou.aliyuncs.com/magein/alpine-deps
