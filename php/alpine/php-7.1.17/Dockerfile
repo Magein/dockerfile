@@ -38,7 +38,8 @@ ENV PHP_SUPPORT \
         --with-jpeg-dir \
         --with-png-dir \
         --with-zlib-dir \
-        --with-freetype-dir
+        --with-freetype-dir \
+        --enable-sockets
 
 ENV PHP_VERSION 7.1.17
 ENV PHP_URL "http://cn2.php.net/get/php-$PHP_VERSION.tar.xz/from/this/mirror"
