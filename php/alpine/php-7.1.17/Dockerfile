@@ -1,4 +1,7 @@
-FROM registry.cn-hangzhou.aliyuncs.com/magein/alpine-deps-php:latest
+FROM alpine:3.6
+
+# 修改 apline的镜像源为阿里云的镜像源 加快构建速度
+RUN echo "https://mirrors.aliyun.com/alpine/v3.6/main/" > /etc/apk/repositories
 
 # php支持的扩展列表
 ENV PHP_SUPPORT \
@@ -24,7 +27,11 @@ ENV GPG_KEYS A917B1ECDA84AEC2B568FED6F50ABC807BD5DCD0 528995BFEDFBA7191D46839EF9
 ENV PHP_ASC_URL "http://cn2.php.net/get/php-$PHP_VERSION.tar.xz.asc/from/this/mirror"
 
 RUN set -xe; \
-    \
+    apk add --no-cache \
+            gnupg \
+            wget \
+
+    ;\
     wget -O php.tar.xz $PHP_URL ; \
     \
     if [ -n $PHP_SHA256 ];then \
@@ -39,25 +46,40 @@ RUN set -xe; \
         done; \
         gpg --batch --verify php.tar.xz.asc php.tar.xz; \
         rm -rf "$GNUPGHOME"; \
-    fi;
+    fi; \
+    apk del gnupg wget
 
 RUN set -x \
     && addgroup -g 82 -S www-data \
     && adduser -u 82 -D -S -G www-data www-data
 
-RUN mkdir -p /php \
+RUN apk add --no-cache \
+         re2c \
+         autoconf \
+         g++ \
+         gcc \
+         make \
+         libxml2-dev \
+         curl-dev \
+         openssl-dev \
+         gd-dev \
+         jpeg-dev \
+         libpng-dev \
+         freetype-dev \
+    && mkdir -p /php \
     && tar -Jxf php.tar.xz -C /php --strip-components=1 \
     && cd /php \
     && ./configure $PHP_SUPPORT --with-config-file-path=/usr/local/etc -with-fpm-user=www-data --with-fpm-group=www-data \
-    && make > /dev/null 2>&1 \
-    && make install > /dev/null 2>&1 \
+    && make \
+    && make install \
     && make clean \
     && rm -rf /php \
     && rm -rf /php.tar.xz \
     && rm -rf /php.tar.xz.asc \
     && rm -rf /tmp/pear \
-    && alpine-deps -d base
+    && apk del re2c autoconf g++ gcc make
 
+# 修改时间
 RUN apk add --no-cache tzdata \
     && echo "Asia/Shanghai" > /etc/timezone \
     && rm -rf /usr/locatime \
