@@ -59,7 +59,7 @@ RUN set -xe; \
     && rm -rf /php.tar.xz \
     && rm -rf /php.tar.xz.asc \
     && rm -rf /tmp/pear \
-    && alpine-deps -d
+    && alpine-deps -d base
 
 RUN apk add --no-cache tzdata \
     && echo "Asia/Shanghai" > /etc/timezone \
