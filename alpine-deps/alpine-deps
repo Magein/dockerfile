@@ -19,14 +19,19 @@ fi
 
 eval set -- "${options}"
 
-delete=()
+# 这里不能使用数组，alpine下使用的sh是  busybox，可以切换，感兴趣的可以查找解决方法
+delete_build=0
+delete_base=0
 
 while true;
 do
     case $1 in
         -d|--delete)
-            length="${#delete}"
-            delete[$length]="."$2"-deps"
+            if [ $2 = "build" ];then
+                delete_build=1
+            else
+                delete_base=1
+            fi
             shift 2
         ;;
         -h|--help)
@@ -39,20 +44,16 @@ do
     esac
 done
 
-if [ "$delete" ]; then
-    for i in "${delete[@]}";
-    do
-        apk del "$i"
-    done
-else
-    # 安装依赖需要的基础的文件，这里确认不用的时候，可调用删除
+if [[ "$delete_build" -eq 0 && "$delete_base" -eq 0 ]]; then
+
+    # 安装编译需要的依赖，这里确认不用的时候，可调用删除
     apk add --no-cache --virtual .build-deps \
         autoconf \
         g++ \
         gcc \
         make
 
-    # 效验压缩包、下载、编译用到的工具，服务安装完成后即可删除
+    # 安装效验压缩包、下载需要的依赖，服务安装完成后即可删除
     apk add --no-cache --virtual .base-deps \
         dpkg-dev \
         dpkg \
@@ -62,4 +63,16 @@ else
         re2c \
         gnupg \
         wget
+else
+    if [ "$delete_build" -eq 1  ]; then
+
+        apk del .base-deps
+    fi
+
+    if [ "$delete_base" -eq 1  ]; then
+
+        apk del .base-deps
+    fi
 fi
+
+
