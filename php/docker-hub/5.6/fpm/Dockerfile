@@ -7,7 +7,7 @@
 FROM alpine:3.8
 
 # 修改 apline的镜像源为阿里云的镜像源 加快构建速度
-RUN echo "https://mirrors.aliyun.com/alpine/v3.6/main/" > /etc/apk/repositories
+RUN echo "https://mirrors.aliyun.com/alpine/v3.8/main/" > /etc/apk/repositories
 
 # dependencies required for running "phpize"
 # these get automatically installed and removed by "docker-php-ext-*" (unless they're already installed)
